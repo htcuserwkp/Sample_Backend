@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Sample.Common;
+using Sample.DataAccess.Entities;
 
 namespace Sample.DataAccess;
 
@@ -18,4 +19,6 @@ public class SampleAppDbContext : DbContext
             optionsBuilder.UseSqlServer(AppConfig.ConnectionString);
         }
     }
+
+    public virtual DbSet<Food> Foods { get; set; } = null!;
 }

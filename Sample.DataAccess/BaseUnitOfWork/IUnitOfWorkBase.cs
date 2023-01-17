@@ -1,4 +1,4 @@
-﻿namespace Sample.DataAccess.UnitOfWorkBase;
+﻿namespace Sample.DataAccess.BaseUnitOfWork;
 
 public interface IUnitOfWorkBase
 {

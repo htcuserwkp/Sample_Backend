@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Sample.DataAccess.UnitOfWorkBase;
+namespace Sample.DataAccess.BaseUnitOfWork;
 
 public class UnitOfWorkBase : IUnitOfWorkBase
 {
