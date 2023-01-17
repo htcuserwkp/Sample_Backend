@@ -1,7 +1,11 @@
 using Sample.API;
+using Sample.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+IConfiguration config = builder.Configuration;
+AppConfig.Configuration = config;
 // Add services to the container.
 
 builder.Services.AddControllers();
