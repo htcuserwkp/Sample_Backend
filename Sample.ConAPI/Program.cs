@@ -1,5 +1,5 @@
-using Sample.API;
-using Sample.API.EndpointExtensions;
+using Sample.API.Extensions;
+using Sample.API.Extensions.Endpoints;
 using Sample.Common;
 
 var builder = WebApplication.CreateBuilder(args);

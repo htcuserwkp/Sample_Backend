@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Sample.DataAccess;
 using Sample.DataAccess.Entities;
 
-namespace Sample.API.EndpointExtensions;
+namespace Sample.API.Extensions.Endpoints;
 
 public static class CategoryEndpoints
 {
-    public static void MapCategoryEndpoints (this IEndpointRouteBuilder routes)
+    public static void MapCategoryEndpoints(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/Category").WithTags(nameof(Category));
 
@@ -30,7 +30,7 @@ public static class CategoryEndpoints
             {
                 return TypedResults.NotFound();
             }
-            
+
             db.Update(category);
             await db.SaveChangesAsync();
 
@@ -43,7 +43,7 @@ public static class CategoryEndpoints
         {
             db.Categories.Add(category);
             await db.SaveChangesAsync();
-            return TypedResults.Created($"/api/Category/{category.Id}",category);
+            return TypedResults.Created($"/api/Category/{category.Id}", category);
         })
         .WithName("CreateCategory")
         .WithOpenApi();

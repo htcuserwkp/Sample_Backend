@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Sample.DataAccess;
 using Sample.DataAccess.Entities;
 
-namespace Sample.API.EndpointExtensions;
+namespace Sample.API.Extensions.Endpoints;
 
 public static class CustomerEndpoints
 {

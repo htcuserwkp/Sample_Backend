@@ -2,7 +2,7 @@
 using Sample.DataAccess;
 using Sample.DataAccess.UnitOfWork;
 
-namespace Sample.API;
+namespace Sample.API.Extensions;
 
 public static class ServiceExtensions
 {
