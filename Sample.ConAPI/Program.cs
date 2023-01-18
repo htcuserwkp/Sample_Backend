@@ -1,4 +1,5 @@
 using Sample.API;
+using Sample.API.EndpointExtensions;
 using Sample.Common;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,5 +37,7 @@ app.UseCors(x => x
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapCategoryEndpoints();
 
 app.Run();

@@ -22,4 +22,6 @@ public class SampleAppDbContext : DbContext
 
     public virtual DbSet<Food> Foods { get; set; } = null!;
     public virtual DbSet<Category> Categories { get; set; } = null!;
+    public virtual DbSet<Customer> Customers { get; set; } = null!;
+    public virtual DbSet<Order> Orders { get; set; } = null!;
 }

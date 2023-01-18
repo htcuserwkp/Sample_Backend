@@ -33,7 +33,8 @@ public class FoodService : IFoodService
                 Name = foodDetails.Name,
                 Description = foodDetails.Description,
                 Quantity = foodDetails.Quantity,
-                Price = foodDetails.Price
+                Price = foodDetails.Price,
+                CategoryId = foodDetails.CategoryId
             };
 
             await _unitOfWork.FoodRepo.AddAsync(food);
@@ -63,7 +64,8 @@ public class FoodService : IFoodService
             Name = food.Name,
             Description = food.Description,
             Price = food.Price,
-            Quantity = food.Quantity
+            Quantity = food.Quantity,
+            CategoryId = food.CategoryId
         };
         return foodDetails;
     }

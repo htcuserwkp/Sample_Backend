@@ -5,11 +5,10 @@
     [Quantity] int NOT NULL,
     [Price] decimal(18,2) NOT NULL,
     [IsDeleted] bit NOT NULL,
+    [CategoryId] bigint NOT NULL,
     CONSTRAINT [PK_Foods] PRIMARY KEY ([Id])
 );
-
-
 GO
-ALTER TABLE [Foods] ADD CONSTRAINT [FK_Foods_Categories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories] ([Id]);
+ALTER TABLE [Foods] ADD CONSTRAINT [FK_Foods_Categories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories] ([Id]) ON DELETE CASCADE;
 GO
 CREATE INDEX [IX_Foods_CategoryId] ON [Foods] ([CategoryId]);
