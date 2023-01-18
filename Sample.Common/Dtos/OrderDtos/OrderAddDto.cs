@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Sample.Common.Dtos.OrderDtos;
 
-namespace Sample.Common.Dtos.OrderDtos
+public class OrderAddDto
 {
-    internal class OrderAddDto
-    {
-    }
+    public long CustomerId { get; set; }
+    public IEnumerable<long> FoodIds { get; set; } = Enumerable.Empty<long>();
 }
