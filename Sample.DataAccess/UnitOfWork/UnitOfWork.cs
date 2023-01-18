@@ -8,8 +8,8 @@ public class UnitOfWork : UnitOfWorkBase, IUnitOfWork
 {
     private readonly SampleAppDbContext _context;
 
-    private IGenericRepository<Food> _foodRepo = null!;
-    private IGenericRepository<Order> _orderRepo = null!;
+    private IGenericRepository<Food>? _foodRepo;
+    private IGenericRepository<Order>? _orderRepo;
 
     public UnitOfWork(SampleAppDbContext context) : base(context)
     {
@@ -18,25 +18,11 @@ public class UnitOfWork : UnitOfWorkBase, IUnitOfWork
 
     public IGenericRepository<Food> FoodRepo
     {
-        get
-        {
-            if (_foodRepo == null)
-            {
-                _foodRepo = new GenericRepository<Food>(_context);
-            }
-            return _foodRepo;
-        }
+        get { return _foodRepo ??= new GenericRepository<Food>(_context); }
     }
 
     public IGenericRepository<Order> OrderRepo
     {
-        get
-        {
-            if (_orderRepo == null)
-            {
-                _orderRepo = new GenericRepository<Order>(_context);
-            }
-            return _orderRepo;
-        }
+        get { return _orderRepo ??= new GenericRepository<Order>(_context); }
     }
 }
