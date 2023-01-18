@@ -2,6 +2,6 @@
 
 public class BaseEntity
 {
-    public required long Id { get; set; }
-    public required bool IsDeleted { get; set; }
+    public long Id { get; set; }
+    public bool IsDeleted { get; set; }
 }

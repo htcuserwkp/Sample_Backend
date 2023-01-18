@@ -1,4 +1,6 @@
-﻿using Sample.DataAccess;
+﻿using Sample.Business.FoodBusinessLogic;
+using Sample.DataAccess;
+using Sample.DataAccess.UnitOfWork;
 
 namespace Sample.API;
 
@@ -9,6 +11,9 @@ public static class ServiceExtensions
     public static void RegisterServices(this IServiceCollection services)
     {
         services.AddDbContext<SampleAppDbContext>();
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IFoodService, FoodService>();
 
         ServiceProvider = services.BuildServiceProvider(true);
     }
