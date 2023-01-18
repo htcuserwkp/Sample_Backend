@@ -1,4 +1,5 @@
 ﻿using Sample.Business.FoodBusinessLogic;
+using Sample.Business.OrderBusinessLogic;
 using Sample.DataAccess;
 using Sample.DataAccess.UnitOfWork;
 
@@ -14,6 +15,7 @@ public static class ServiceExtensions
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IFoodService, FoodService>();
+        services.AddScoped<IOrderService, OrderService>();
 
         ServiceProvider = services.BuildServiceProvider(true);
     }

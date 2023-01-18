@@ -1,9 +1,15 @@
 ﻿using Sample.Common.Dtos.OrderDtos;
+using Sample.DataAccess.UnitOfWork;
 
 namespace Sample.Business.OrderBusinessLogic;
 
 public class OrderService : IOrderService
 {
+    private readonly IUnitOfWork _unitOfWork;
+    public OrderService(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
     public async Task<OrderDto> GetByIdAsync(long id)
     {
         throw new NotImplementedException();
