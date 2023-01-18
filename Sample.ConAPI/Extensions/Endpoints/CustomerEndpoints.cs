@@ -7,6 +7,7 @@ namespace Sample.API.Extensions.Endpoints;
 
 public static class CustomerEndpoints
 {
+    //TODO: Organize to comply solution architecture
     public static void MapCustomerEndpoints(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/Customer").WithTags(nameof(Customer));

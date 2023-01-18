@@ -7,6 +7,7 @@ namespace Sample.API.Extensions.Endpoints;
 
 public static class CategoryEndpoints
 {
+    //TODO: Organize to comply solution architecture
     public static void MapCategoryEndpoints(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/Category").WithTags(nameof(Category));
