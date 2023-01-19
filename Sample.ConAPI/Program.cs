@@ -26,12 +26,12 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+app.ConfigureExceptionHandler(loggerFactory, app.Environment);
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
