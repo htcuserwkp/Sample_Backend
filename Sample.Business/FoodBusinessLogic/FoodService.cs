@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Net;
+using Microsoft.Extensions.Logging;
 using Sample.Common.Dtos.FoodDtos;
+using Sample.Common.Helpers.Exceptions;
 using Sample.DataAccess.Entities;
 using Sample.DataAccess.UnitOfWork;
 
@@ -20,7 +22,14 @@ public class FoodService : IFoodService
     {
         var foods = (await _unitOfWork.FoodRepo.GetAllAsync()).ToList();
 
-        if (!foods.Any()) return Enumerable.Empty<FoodDto>();
+        if (!foods.Any())
+        {
+            throw new CustomException
+            {
+                CustomMessage = "No Foods Found",
+                HttpStatusCode = HttpStatusCode.NotFound
+            };
+        }
         var foodList = GetFoodsList(foods);
         _logger.LogDebug("Food details retrieved successfully.");
         return foodList;
@@ -52,6 +61,21 @@ public class FoodService : IFoodService
         }
 
         return status;
+    }
+
+    public async Task<FoodDto> GetByIdAsync(long id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<string> UpdateFoodAsync(FoodDto foodDetails)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<string> DeleteFoodAsync(long id)
+    {
+        throw new NotImplementedException();
     }
 
     #region Private Methods
