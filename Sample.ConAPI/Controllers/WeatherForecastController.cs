@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Sample.ConAPI;
 
-namespace Sample.ConAPI.Controllers;
+namespace Sample.API.Controllers;
 
 public class WeatherForecastController : BaseApiController
 {

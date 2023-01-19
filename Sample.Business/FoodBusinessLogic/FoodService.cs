@@ -1,4 +1,5 @@
-﻿using Sample.Common.Dtos.FoodDtos;
+﻿using Microsoft.Extensions.Logging;
+using Sample.Common.Dtos.FoodDtos;
 using Sample.DataAccess.Entities;
 using Sample.DataAccess.UnitOfWork;
 
@@ -7,10 +8,12 @@ namespace Sample.Business.FoodBusinessLogic;
 public class FoodService : IFoodService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<FoodService> _logger;
 
-    public FoodService(IUnitOfWork unitOfWork)
+    public FoodService(IUnitOfWork unitOfWork, ILogger<FoodService> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<FoodDto>> GetAllFoodAsync()
@@ -19,6 +22,7 @@ public class FoodService : IFoodService
 
         if (!foods.Any()) return Enumerable.Empty<FoodDto>();
         var foodList = GetFoodsList(foods);
+        _logger.LogDebug("Food details retrieved successfully.");
         return foodList;
     }
 
@@ -40,11 +44,11 @@ public class FoodService : IFoodService
             await _unitOfWork.FoodRepo.AddAsync(food);
             await _unitOfWork.SaveChangesAsync();
 
-            status = "Product created successfully";
+            status = "Food added successfully";
         }
         catch
         {
-            status = "Product created successfully";
+            status = "Food failed to add";
         }
 
         return status;

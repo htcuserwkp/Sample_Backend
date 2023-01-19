@@ -1,13 +1,19 @@
 using Sample.API.Extensions;
 using Sample.API.Extensions.Endpoints;
 using Sample.Common;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 IConfiguration config = builder.Configuration;
 AppConfig.Configuration = config;
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(config)
+    .CreateLogger();
+
 // Add services to the container.
+builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 builder.Services.AddMemoryCache();

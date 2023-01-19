@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Sample.Business.OrderBusinessLogic;
 using Sample.Common.Dtos.OrderDtos;
-using Sample.ConAPI.Controllers;
 
 namespace Sample.API.Controllers;
 
 public class OrderController : BaseApiController
 {
     private readonly IOrderService _orderService;
+    private readonly ILogger<OrderController> _logger;
 
-    public OrderController(IOrderService orderService)
+    public OrderController(IOrderService orderService, ILogger<OrderController> logger)
     {
         _orderService = orderService;
+        _logger = logger;
     }
     //GET: api/All-Orders
     [HttpGet("GetAll")]

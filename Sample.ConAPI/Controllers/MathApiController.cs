@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Sample.ConAPI.Controllers;
+namespace Sample.API.Controllers;
 
 public class MathApiController : BaseApiController
 {
