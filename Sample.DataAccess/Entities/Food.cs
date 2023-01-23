@@ -12,6 +12,4 @@ public class Food : BaseEntity
 
     public long CategoryId { get; set; }
     public virtual Category Category { get; set; } = null!;
-
-    public virtual ICollection<Order>? Orders { get; set; }
 }

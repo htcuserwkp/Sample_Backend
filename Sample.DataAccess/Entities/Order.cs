@@ -21,7 +21,7 @@ public class Order : BaseEntity
     [Column(TypeName = "decimal(18,2)")]
     public decimal Total { get; set; }
 
-    public virtual ICollection<Food> Foods { get; set; } = null!;
+    public virtual ICollection<OrderItem> OrderItems { get; set; } = null!;
 
     public long CustomerId { get; set; }
     public virtual Customer Customer { get; set; } = null!;

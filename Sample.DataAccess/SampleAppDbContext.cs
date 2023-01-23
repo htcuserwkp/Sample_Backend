@@ -25,4 +25,5 @@ public class SampleAppDbContext : DbContext
     public virtual DbSet<Customer> Customers { get; set; } = null!;
     public virtual DbSet<Order> Orders { get; set; } = null!;
     public virtual DbSet<Log> Logs { get; set; } = null!;
+    public virtual DbSet<OrderItem> OrderItems { get; set; } = null!;
 }
