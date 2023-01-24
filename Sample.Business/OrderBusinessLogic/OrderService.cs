@@ -56,7 +56,7 @@ public class OrderService : IOrderService
             {
                 OrderNumber = "100" + new Random().Next(100000000, 999999999).ToString(),
                 CustomerId = orderDetails.CustomerId,
-                OrderItems = await GetOrderItems(foods, orderDetails.OrderItems).ConfigureAwait(false)
+                OrderItems = GetOrderItems(foods, orderDetails.OrderItems)
             };
             
             //Calculate Order Total
@@ -84,7 +84,7 @@ public class OrderService : IOrderService
         return status;
     }
 
-    private static async Task<ICollection<OrderItem>> GetOrderItems(IEnumerable<Food> foods, IEnumerable<OrderItemAddDto> orderDetailsOrderItems)
+    private static  ICollection<OrderItem> GetOrderItems(IEnumerable<Food> foods, IEnumerable<OrderItemAddDto> orderDetailsOrderItems)
     {
         return foods.Select(item => new OrderItem()
         {
