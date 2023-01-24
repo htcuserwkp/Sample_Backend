@@ -3,5 +3,5 @@
 public class OrderAddDto
 {
     public long CustomerId { get; set; }
-    public IEnumerable<long> FoodIds { get; set; } = Enumerable.Empty<long>();
+    public IEnumerable<OrderItemAddDto> OrderItems { get; set; } = Enumerable.Empty<OrderItemAddDto>();
 }
