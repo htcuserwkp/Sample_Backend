@@ -70,9 +70,17 @@ public class OrderService : IOrderService
             //Add the order
             await _unitOfWork.OrderRepo.AddAsync(order);
 
+            //reduce food quantities accordingly //TODO: do only for pre-prepared food, move to foodService
+            foreach (var food in foods)
+            {
+                food.Quantity -= (order.OrderItems.FirstOrDefault(s => s.FoodId == food.Id)!.Quantity);
+                await _unitOfWork.FoodRepo.UpdateAsync(food);
+            }
+
             await _unitOfWork.SaveChangesAsync();
             status = "Order placed successfully";
             _logger.LogDebug(status);
+            _logger.LogDebug("Stocks Reduced successfully for Pre-prepared Foods");
         }
         catch (Exception e)
         {
