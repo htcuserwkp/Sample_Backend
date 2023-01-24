@@ -71,7 +71,7 @@ public class OrderService : IOrderService
             await _unitOfWork.OrderRepo.AddAsync(order);
 
             //reduce food quantities accordingly //TODO: do only for pre-prepared food, move to foodService
-            foreach (var food in foods)
+            foreach (var food in foods.Where(f => !f.IsFreshlyPrepared))
             {
                 food.Quantity -= (order.OrderItems.FirstOrDefault(s => s.FoodId == food.Id)!.Quantity);
                 await _unitOfWork.FoodRepo.UpdateAsync(food);
@@ -80,7 +80,9 @@ public class OrderService : IOrderService
             await _unitOfWork.SaveChangesAsync();
             status = "Order placed successfully";
             _logger.LogDebug(status);
-            _logger.LogDebug("Stocks Reduced successfully for Pre-prepared Foods");
+
+            if (foods.Any(f => !f.IsFreshlyPrepared)) 
+                _logger.LogDebug("Stocks Reduced successfully for Pre-prepared Foods");
         }
         catch (Exception e)
         {
