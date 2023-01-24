@@ -2,6 +2,7 @@
 using Sample.Common.Dtos.OrderDtos;
 using Sample.Common.Helpers.Exceptions;
 using Sample.DataAccess.Entities;
+using Sample.DataAccess.Migrations;
 using Sample.DataAccess.UnitOfWork;
 using System.Net;
 
@@ -18,7 +19,17 @@ public class OrderService : IOrderService
     }
     public async Task<OrderDto> GetByIdAsync(long id)
     {
-        throw new NotImplementedException();
+        var order = await _unitOfWork.OrderRepo.GetByIdAsync(id);
+        if (order == null)
+            throw new CustomException
+            {
+                CustomMessage = "No Order Found",
+                HttpStatusCode = HttpStatusCode.NotFound
+            };
+
+        var customerEmail = (await _unitOfWork.CustomerRepo.GetByIdAsync(order.CustomerId)).Email;
+
+        return GetOrderDetails(order, customerEmail);
     }
 
     public async Task<IEnumerable<OrderDto>> GetAllAsync()
@@ -28,7 +39,17 @@ public class OrderService : IOrderService
 
     public async Task<IEnumerable<OrderDto>> GetByCustomerAsync(long customerId)
     {
-        throw new NotImplementedException();
+        var orders = await _unitOfWork.OrderRepo.GetAsync(o => o.CustomerId == customerId).ConfigureAwait(false);
+        if (orders == null)
+            throw new CustomException
+            {
+                CustomMessage = "No Orders Found",
+                HttpStatusCode = HttpStatusCode.NotFound
+            };
+
+        var customerEmail = (await _unitOfWork.CustomerRepo.GetByIdAsync(customerId)).Email;
+
+        return GetOrderListResponse(orders, customerEmail);
     }
 
     public async Task<string> PlaceOrderAsync(OrderAddDto orderDetails)
@@ -93,6 +114,8 @@ public class OrderService : IOrderService
         return status;
     }
 
+
+    #region Private Methods
     private static  ICollection<OrderItem> GetOrderItems(IEnumerable<Food> foods, IEnumerable<OrderItemAddDto> orderDetailsOrderItems)
     {
         return foods.Select(item => new OrderItem()
@@ -103,4 +126,40 @@ public class OrderService : IOrderService
             Quantity = (orderDetailsOrderItems.FirstOrDefault(i => i.FoodId == item.Id)!).Quantity
         }) .ToList();
     }
+
+    private static OrderDto GetOrderDetails(Order order, string customerEmail)
+    {
+        return new OrderDto()
+        {
+            Id = order.Id,
+            OrderNumber = order.OrderNumber,
+            CustomerId = order.CustomerId,
+            CustomerEmail = customerEmail,
+            OrderPlaced = order.OrderPlaced,
+            SubTotal = order.SubTotal,
+            ServiceCharge = order.ServiceCharge,
+            Discount = order.Discount,
+            Total = order.Total,
+            OrderItems = GetOrderItemsList(order.OrderItems)
+        };
+    }
+
+    private static IEnumerable<OrderItemDto> GetOrderItemsList(IEnumerable<OrderItem> orderOrderItems)
+    {
+        return orderOrderItems.Select(item => new OrderItemDto()
+        {
+            Quantity = item.Quantity,
+            Price = item.Price,
+            FoodId = item.FoodId,
+            FoodName = item.FoodName
+        }).ToList();
+    }
+
+    private static IEnumerable<OrderDto> GetOrderListResponse(IEnumerable<Order> orders, string customerEmail)
+    {
+        return orders
+            .Select(order => GetOrderDetails(order, customerEmail))
+            .ToList();
+    }
+    #endregion
 }
