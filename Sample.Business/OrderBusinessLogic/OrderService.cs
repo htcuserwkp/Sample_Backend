@@ -73,7 +73,6 @@ public class OrderService : IOrderService
             await _unitOfWork.SaveChangesAsync();
             status = "Order placed successfully";
             _logger.LogDebug(status);
-            _logger.LogDebug("Stocks Reduced successfully for Pre-prepared Food");
         }
         catch (Exception e)
         {

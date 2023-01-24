@@ -9,6 +9,7 @@ public class Food : BaseEntity
     public required int Quantity { get; set; }
     [Column(TypeName = "decimal(18,2)")]
     public required decimal Price { get; set; }
+    public bool IsFreshlyPrepared { get; set; } = false;
 
     public long CategoryId { get; set; }
     public virtual Category Category { get; set; } = null!;
