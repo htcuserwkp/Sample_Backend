@@ -70,7 +70,7 @@ public class OrderService : IOrderService
             //Add the order
             await _unitOfWork.OrderRepo.AddAsync(order);
 
-            //reduce food quantities accordingly //TODO: do only for pre-prepared food, move to foodService
+            //reduce food quantities accordingly //TODO: move to foodService
             foreach (var food in foods.Where(f => !f.IsFreshlyPrepared))
             {
                 food.Quantity -= (order.OrderItems.FirstOrDefault(s => s.FoodId == food.Id)!.Quantity);
