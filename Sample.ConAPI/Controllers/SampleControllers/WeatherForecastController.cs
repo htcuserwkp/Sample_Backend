@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Sample.ConAPI;
 
-namespace Sample.API.Controllers;
+namespace Sample.API.Controllers.SampleControllers;
 
 public class WeatherForecastController : BaseApiController
 {
-    private static readonly string[] Summaries = new[]
-    {
+    private static readonly string[] Summaries = {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
@@ -24,11 +22,11 @@ public class WeatherForecastController : BaseApiController
     public IEnumerable<WeatherForecast> Get([FromQuery] int noOfDays = 5)
     {
         return Enumerable.Range(0, noOfDays).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
+        {
+            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+            TemperatureC = Random.Shared.Next(-20, 55),
+            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+        })
             .ToArray();
     }
 
@@ -57,20 +55,31 @@ public class WeatherForecastController : BaseApiController
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             }).ToArray();
-            
+
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 // Keep in cache for this time, reset time if accessed.
                 .SetSlidingExpiration(TimeSpan.FromSeconds(60));
-            
+
             _cache.Set(cacheKey, forecasts, cacheEntryOptions);
-            
+
             return Ok(forecasts);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while getting forecast");
-            
+
             return StatusCode(500, "An error occurred while getting the forecast. Please try again later.");
         }
     }
+}
+
+public class WeatherForecast
+{
+    public DateOnly Date { get; set; }
+
+    public int TemperatureC { get; set; }
+
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+
+    public string? Summary { get; set; }
 }

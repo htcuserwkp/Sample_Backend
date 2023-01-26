@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Sample.API.Controllers;
+namespace Sample.API.Controllers.SampleControllers;
 
 public class MathApiController : BaseApiController
 {
@@ -12,7 +12,7 @@ public class MathApiController : BaseApiController
         _logger = logger;
     }
 
-   [HttpGet]
+    [HttpGet]
     public IActionResult IsPrime([FromQuery][Range(1, long.MaxValue)] long number)
     {
         try
