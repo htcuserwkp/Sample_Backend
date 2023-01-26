@@ -16,7 +16,7 @@ public class SampleAppDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer(AppConfig.ConnectionString);
+            optionsBuilder.UseLazyLoadingProxies().UseSqlServer(AppConfig.ConnectionString);
         }
     }
 
