@@ -62,6 +62,21 @@ public class OrderController : BaseApiController
         return Ok(response);
     }
 
+    [HttpGet("GetByOrderNumber")]
+    public async Task<ActionResult<OrderDto>> GetByOrderNumber(string orderNumber)
+    {
+        _logger.LogInformation($"Get Order for #{orderNumber}, request received.");
+        var response = new ResponseBody<OrderDto>();
+
+        var order = await _orderService.GetByOrderNumber(orderNumber).ConfigureAwait(false);
+
+        response.Data = order;
+        response.Message = "Order details retrieved successfully";
+        _logger.LogInformation(response.Message);
+
+        return Ok(response);
+    }
+
     [HttpPost("PlaceOrder")]
     public async Task<IActionResult> PlaceOrder([FromBody] OrderAddDto orderDetails)
     {

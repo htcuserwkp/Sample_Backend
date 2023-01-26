@@ -8,4 +8,5 @@ public interface IOrderService
     Task<IEnumerable<OrderDto>> GetAllAsync();
     Task<IEnumerable<OrderDto>> GetByCustomerAsync(long customerId);
     Task<string> PlaceOrderAsync(OrderAddDto orderDetails);
+    Task<OrderDto> GetByOrderNumber(string orderNumber);
 }

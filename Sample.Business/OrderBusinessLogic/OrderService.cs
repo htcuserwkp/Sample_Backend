@@ -17,10 +17,26 @@ public class OrderService : IOrderService
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
+
     public async Task<OrderDto> GetByIdAsync(long id)
     {
         var order = await _unitOfWork.OrderRepo.GetByIdAsync(id);
-        if (order == null)
+        if (order is null)
+            throw new CustomException
+            {
+                CustomMessage = "No Order Found",
+                HttpStatusCode = HttpStatusCode.NotFound
+            };
+
+        var customerEmail = (await _unitOfWork.CustomerRepo.GetByIdAsync(order.CustomerId)).Email;
+
+        return GetOrderDetails(order, customerEmail);
+    }
+
+    public async Task<OrderDto> GetByOrderNumber(string orderNumber)
+    {
+        var order = await _unitOfWork.OrderRepo.FirstOrDefaultAsync(o => o.OrderNumber == orderNumber.Trim());
+        if (order is null)
             throw new CustomException
             {
                 CustomMessage = "No Order Found",
@@ -39,7 +55,7 @@ public class OrderService : IOrderService
             .ConfigureAwait(false))
             .ToList();
 
-        if (orders == null || !orders.Any())
+        if (orders is null || !orders.Any())
             throw new CustomException
             {
                 CustomMessage = "No Orders Found",
@@ -64,7 +80,7 @@ public class OrderService : IOrderService
             .ConfigureAwait(false))
             .ToList();
 
-        if (orders == null || !orders.Any())
+        if (orders is null || !orders.Any())
             throw new CustomException
             {
                 CustomMessage = "No Orders Found",
@@ -95,7 +111,7 @@ public class OrderService : IOrderService
                 .ConfigureAwait(false))
                 .ToList();
 
-            if (foods == null || !foods.Any())
+            if (foods is null || !foods.Any())
             {
                 throw new CustomException
                 {
@@ -145,7 +161,6 @@ public class OrderService : IOrderService
         }
         return status;
     }
-
 
     #region Private Methods
     private static  ICollection<OrderItem> GetOrderItems(IEnumerable<Food> foods, IEnumerable<OrderItemAddDto> orderDetailsOrderItems)
