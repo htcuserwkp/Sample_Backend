@@ -2,9 +2,9 @@
 using Sample.Common.Dtos.OrderDtos;
 using Sample.Common.Helpers.Exceptions;
 using Sample.DataAccess.Entities;
-using Sample.DataAccess.Migrations;
 using Sample.DataAccess.UnitOfWork;
 using System.Net;
+using Sample.Common.Dtos.CustomerDtos;
 
 namespace Sample.Business.OrderBusinessLogic;
 
@@ -34,23 +34,55 @@ public class OrderService : IOrderService
 
     public async Task<IEnumerable<OrderDto>> GetAllAsync()
     {
-        throw new NotImplementedException();
-    }
+        var orders = (await _unitOfWork.OrderRepo
+            .GetAllAsync()
+            .ConfigureAwait(false))
+            .ToList();
 
-    public async Task<IEnumerable<OrderDto>> GetByCustomerAsync(long customerId)
-    {
-        var orders = await _unitOfWork.OrderRepo.GetAsync(o => o.CustomerId == customerId).ConfigureAwait(false);
-        if (orders == null)
+        if (orders == null || !orders.Any())
             throw new CustomException
             {
                 CustomMessage = "No Orders Found",
                 HttpStatusCode = HttpStatusCode.NotFound
             };
 
-        var customerEmail = (await _unitOfWork.CustomerRepo.GetByIdAsync(customerId)).Email;
+        var emailDetails = (await _unitOfWork.CustomerRepo
+            .GetAsync(c => orders.Select(o=> o.CustomerId).Contains(c.Id)))
+            .Select(c => new EmailDto()
+            {
+                Id = c.Id,
+                Email = c.Email
+            });
 
-        return GetOrderListResponse(orders, customerEmail);
+        return GetOrderListResponse(orders, emailDetails);
     }
+
+    public async Task<IEnumerable<OrderDto>> GetByCustomerAsync(long customerId)
+    {
+        var orders = (await _unitOfWork.OrderRepo
+            .GetAsync(o => o.CustomerId == customerId)
+            .ConfigureAwait(false))
+            .ToList();
+
+        if (orders == null || !orders.Any())
+            throw new CustomException
+            {
+                CustomMessage = "No Orders Found",
+                HttpStatusCode = HttpStatusCode.NotFound
+            };
+
+        var emailDetails = new List<EmailDto>
+        {
+            new()
+            {
+                Id = customerId,
+                Email = (await _unitOfWork.CustomerRepo.GetByIdAsync(customerId)).Email
+            }
+        };
+
+        return GetOrderListResponse(orders, emailDetails);
+    }
+
 
     public async Task<string> PlaceOrderAsync(OrderAddDto orderDetails)
     {
@@ -124,7 +156,7 @@ public class OrderService : IOrderService
             FoodName = item.Name,
             Price = item.Price,
             Quantity = (orderDetailsOrderItems.FirstOrDefault(i => i.FoodId == item.Id)!).Quantity
-        }) .ToList();
+        }).ToList();
     }
 
     private static OrderDto GetOrderDetails(Order order, string customerEmail)
@@ -155,11 +187,13 @@ public class OrderService : IOrderService
         }).ToList();
     }
 
-    private static IEnumerable<OrderDto> GetOrderListResponse(IEnumerable<Order> orders, string customerEmail)
+    private static IEnumerable<OrderDto> GetOrderListResponse(IEnumerable<Order> orders, IEnumerable<EmailDto> emailDetails)
     {
         return orders
-            .Select(order => GetOrderDetails(order, customerEmail))
-            .ToList();
+                .Select(order => GetOrderDetails(
+                    order, 
+                    emailDetails.FirstOrDefault(e => e.Id == order.CustomerId)!.Email))
+                .ToList();
     }
     #endregion
 }
