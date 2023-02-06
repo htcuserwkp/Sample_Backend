@@ -74,5 +74,7 @@
     <Build Include="dbo\Tables\Customers.sql" />
     <Build Include="dbo\Tables\Orders.sql" />
     <Build Include="dbo\Tables\FoodOrder.sql" />
+    <Build Include="dbo\Tables\Logs.sql" />
+    <Build Include="dbo\Tables\OrderItems.sql" />
   </ItemGroup>
 </Project>

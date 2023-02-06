@@ -9,6 +9,6 @@
     CONSTRAINT [PK_Foods] PRIMARY KEY ([Id])
 );
 GO
-ALTER TABLE [Foods] ADD CONSTRAINT [FK_Foods_Categories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories] ([Id]) ON DELETE CASCADE;
+ALTER TABLE [Foods] ADD CONSTRAINT [FK_Foods_Categories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories] ([Id]);
 GO
 CREATE INDEX [IX_Foods_CategoryId] ON [Foods] ([CategoryId]);
