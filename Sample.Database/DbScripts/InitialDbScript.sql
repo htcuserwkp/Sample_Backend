@@ -126,3 +126,213 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+CREATE TABLE [Logs] (
+    [Id] int NOT NULL IDENTITY,
+    [Message] nvarchar(max) NOT NULL,
+    [MessageTemplate] nvarchar(max) NOT NULL,
+    [Level] nvarchar(max) NOT NULL,
+    [TimeStamp] datetime2 NOT NULL,
+    [Exception] nvarchar(max) NOT NULL,
+    [Properties] nvarchar(max) NOT NULL,
+    [LogEvent] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_Logs] PRIMARY KEY ([Id])
+);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20230119083046_Logs', N'7.0.2');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DROP TABLE [FoodOrder];
+GO
+
+CREATE TABLE [OrderItems] (
+    [Id] bigint NOT NULL IDENTITY,
+    [FoodId] bigint NOT NULL,
+    [FoodName] nvarchar(max) NOT NULL,
+    [Quantity] int NOT NULL,
+    [Price] decimal(18,2) NOT NULL,
+    [OrderId] bigint NOT NULL,
+    [IsDeleted] bit NOT NULL,
+    CONSTRAINT [PK_OrderItems] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_OrderItems_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [Orders] ([Id]) ON DELETE CASCADE
+);
+GO
+
+CREATE INDEX [IX_OrderItems_OrderId] ON [OrderItems] ([OrderId]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20230123123613_OrderItemCreated', N'7.0.2');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [Foods] ADD [IsFreshlyPrepared] bit NOT NULL DEFAULT CAST(0 AS bit);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20230124091442_IsFreshlyPreparedFood', N'7.0.2');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var1 sysname;
+SELECT @var1 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Orders]') AND [c].[name] = N'OrderNumber');
+IF @var1 IS NOT NULL EXEC(N'ALTER TABLE [Orders] DROP CONSTRAINT [' + @var1 + '];');
+ALTER TABLE [Orders] ALTER COLUMN [OrderNumber] nvarchar(20) NOT NULL;
+GO
+
+DECLARE @var2 sysname;
+SELECT @var2 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[OrderItems]') AND [c].[name] = N'FoodName');
+IF @var2 IS NOT NULL EXEC(N'ALTER TABLE [OrderItems] DROP CONSTRAINT [' + @var2 + '];');
+ALTER TABLE [OrderItems] ALTER COLUMN [FoodName] nvarchar(128) NOT NULL;
+GO
+
+DECLARE @var3 sysname;
+SELECT @var3 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Logs]') AND [c].[name] = N'Properties');
+IF @var3 IS NOT NULL EXEC(N'ALTER TABLE [Logs] DROP CONSTRAINT [' + @var3 + '];');
+ALTER TABLE [Logs] ALTER COLUMN [Properties] nvarchar(512) NOT NULL;
+GO
+
+DECLARE @var4 sysname;
+SELECT @var4 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Logs]') AND [c].[name] = N'MessageTemplate');
+IF @var4 IS NOT NULL EXEC(N'ALTER TABLE [Logs] DROP CONSTRAINT [' + @var4 + '];');
+ALTER TABLE [Logs] ALTER COLUMN [MessageTemplate] nvarchar(512) NOT NULL;
+GO
+
+DECLARE @var5 sysname;
+SELECT @var5 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Logs]') AND [c].[name] = N'Message');
+IF @var5 IS NOT NULL EXEC(N'ALTER TABLE [Logs] DROP CONSTRAINT [' + @var5 + '];');
+ALTER TABLE [Logs] ALTER COLUMN [Message] nvarchar(512) NOT NULL;
+GO
+
+DECLARE @var6 sysname;
+SELECT @var6 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Logs]') AND [c].[name] = N'LogEvent');
+IF @var6 IS NOT NULL EXEC(N'ALTER TABLE [Logs] DROP CONSTRAINT [' + @var6 + '];');
+ALTER TABLE [Logs] ALTER COLUMN [LogEvent] nvarchar(512) NOT NULL;
+GO
+
+DECLARE @var7 sysname;
+SELECT @var7 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Logs]') AND [c].[name] = N'Level');
+IF @var7 IS NOT NULL EXEC(N'ALTER TABLE [Logs] DROP CONSTRAINT [' + @var7 + '];');
+ALTER TABLE [Logs] ALTER COLUMN [Level] nvarchar(128) NOT NULL;
+GO
+
+DECLARE @var8 sysname;
+SELECT @var8 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Logs]') AND [c].[name] = N'Exception');
+IF @var8 IS NOT NULL EXEC(N'ALTER TABLE [Logs] DROP CONSTRAINT [' + @var8 + '];');
+ALTER TABLE [Logs] ALTER COLUMN [Exception] nvarchar(512) NOT NULL;
+GO
+
+DECLARE @var9 sysname;
+SELECT @var9 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Foods]') AND [c].[name] = N'Name');
+IF @var9 IS NOT NULL EXEC(N'ALTER TABLE [Foods] DROP CONSTRAINT [' + @var9 + '];');
+ALTER TABLE [Foods] ALTER COLUMN [Name] nvarchar(128) NOT NULL;
+GO
+
+DECLARE @var10 sysname;
+SELECT @var10 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Foods]') AND [c].[name] = N'Description');
+IF @var10 IS NOT NULL EXEC(N'ALTER TABLE [Foods] DROP CONSTRAINT [' + @var10 + '];');
+ALTER TABLE [Foods] ALTER COLUMN [Description] nvarchar(512) NOT NULL;
+GO
+
+DECLARE @var11 sysname;
+SELECT @var11 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Customers]') AND [c].[name] = N'Phone');
+IF @var11 IS NOT NULL EXEC(N'ALTER TABLE [Customers] DROP CONSTRAINT [' + @var11 + '];');
+ALTER TABLE [Customers] ALTER COLUMN [Phone] nvarchar(20) NOT NULL;
+GO
+
+DECLARE @var12 sysname;
+SELECT @var12 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Customers]') AND [c].[name] = N'Name');
+IF @var12 IS NOT NULL EXEC(N'ALTER TABLE [Customers] DROP CONSTRAINT [' + @var12 + '];');
+ALTER TABLE [Customers] ALTER COLUMN [Name] nvarchar(128) NOT NULL;
+GO
+
+DECLARE @var13 sysname;
+SELECT @var13 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Customers]') AND [c].[name] = N'Email');
+IF @var13 IS NOT NULL EXEC(N'ALTER TABLE [Customers] DROP CONSTRAINT [' + @var13 + '];');
+ALTER TABLE [Customers] ALTER COLUMN [Email] nvarchar(128) NOT NULL;
+GO
+
+DECLARE @var14 sysname;
+SELECT @var14 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Categories]') AND [c].[name] = N'Name');
+IF @var14 IS NOT NULL EXEC(N'ALTER TABLE [Categories] DROP CONSTRAINT [' + @var14 + '];');
+ALTER TABLE [Categories] ALTER COLUMN [Name] nvarchar(128) NOT NULL;
+GO
+
+DECLARE @var15 sysname;
+SELECT @var15 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Categories]') AND [c].[name] = N'Description');
+IF @var15 IS NOT NULL EXEC(N'ALTER TABLE [Categories] DROP CONSTRAINT [' + @var15 + '];');
+ALTER TABLE [Categories] ALTER COLUMN [Description] nvarchar(512) NOT NULL;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20230206020142_LimitNvarchar', N'7.0.2');
+GO
+
+COMMIT;
+GO
+

@@ -1,11 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.DataAccess.Entities
 {
     public class OrderItem : BaseEntity
     {
         public long FoodId { get; set; }
+
+        [MaxLength(128), Required]
         public string FoodName { get; set; } = string.Empty;
+
         public int Quantity { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]

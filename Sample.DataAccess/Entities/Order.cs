@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.DataAccess.Entities;
 
 public class Order : BaseEntity
 {
+    [MaxLength(20), Required]
     public string OrderNumber { get; set; } = null!;
 
     public DateTime OrderPlaced { get; set; } = DateTime.UtcNow;
