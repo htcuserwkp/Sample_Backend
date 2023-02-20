@@ -336,3 +336,158 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [Orders] ADD [CreatedBy] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [Orders] ADD [ModifiedBy] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [Orders] ADD [ModifiedOn] datetime2 NULL;
+GO
+
+ALTER TABLE [OrderItems] ADD [CreatedBy] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [OrderItems] ADD [ModifiedBy] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [OrderItems] ADD [ModifiedOn] datetime2 NULL;
+GO
+
+ALTER TABLE [Foods] ADD [CreatedBy] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [Foods] ADD [ModifiedBy] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [Foods] ADD [ModifiedOn] datetime2 NULL;
+GO
+
+ALTER TABLE [Customers] ADD [CreatedBy] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [Customers] ADD [ModifiedBy] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [Customers] ADD [ModifiedOn] datetime2 NULL;
+GO
+
+ALTER TABLE [Categories] ADD [CreatedBy] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [Categories] ADD [ModifiedBy] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [Categories] ADD [ModifiedOn] datetime2 NULL;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20230220105222_AuditInfo', N'7.0.2');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var16 sysname;
+SELECT @var16 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Orders]') AND [c].[name] = N'ModifiedBy');
+IF @var16 IS NOT NULL EXEC(N'ALTER TABLE [Orders] DROP CONSTRAINT [' + @var16 + '];');
+ALTER TABLE [Orders] ALTER COLUMN [ModifiedBy] nvarchar(128) NULL;
+GO
+
+DECLARE @var17 sysname;
+SELECT @var17 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Orders]') AND [c].[name] = N'CreatedBy');
+IF @var17 IS NOT NULL EXEC(N'ALTER TABLE [Orders] DROP CONSTRAINT [' + @var17 + '];');
+ALTER TABLE [Orders] ALTER COLUMN [CreatedBy] nvarchar(128) NULL;
+GO
+
+DECLARE @var18 sysname;
+SELECT @var18 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[OrderItems]') AND [c].[name] = N'ModifiedBy');
+IF @var18 IS NOT NULL EXEC(N'ALTER TABLE [OrderItems] DROP CONSTRAINT [' + @var18 + '];');
+ALTER TABLE [OrderItems] ALTER COLUMN [ModifiedBy] nvarchar(128) NULL;
+GO
+
+DECLARE @var19 sysname;
+SELECT @var19 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[OrderItems]') AND [c].[name] = N'CreatedBy');
+IF @var19 IS NOT NULL EXEC(N'ALTER TABLE [OrderItems] DROP CONSTRAINT [' + @var19 + '];');
+ALTER TABLE [OrderItems] ALTER COLUMN [CreatedBy] nvarchar(128) NULL;
+GO
+
+DECLARE @var20 sysname;
+SELECT @var20 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Foods]') AND [c].[name] = N'ModifiedBy');
+IF @var20 IS NOT NULL EXEC(N'ALTER TABLE [Foods] DROP CONSTRAINT [' + @var20 + '];');
+ALTER TABLE [Foods] ALTER COLUMN [ModifiedBy] nvarchar(128) NULL;
+GO
+
+DECLARE @var21 sysname;
+SELECT @var21 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Foods]') AND [c].[name] = N'CreatedBy');
+IF @var21 IS NOT NULL EXEC(N'ALTER TABLE [Foods] DROP CONSTRAINT [' + @var21 + '];');
+ALTER TABLE [Foods] ALTER COLUMN [CreatedBy] nvarchar(128) NULL;
+GO
+
+DECLARE @var22 sysname;
+SELECT @var22 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Customers]') AND [c].[name] = N'ModifiedBy');
+IF @var22 IS NOT NULL EXEC(N'ALTER TABLE [Customers] DROP CONSTRAINT [' + @var22 + '];');
+ALTER TABLE [Customers] ALTER COLUMN [ModifiedBy] nvarchar(128) NULL;
+GO
+
+DECLARE @var23 sysname;
+SELECT @var23 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Customers]') AND [c].[name] = N'CreatedBy');
+IF @var23 IS NOT NULL EXEC(N'ALTER TABLE [Customers] DROP CONSTRAINT [' + @var23 + '];');
+ALTER TABLE [Customers] ALTER COLUMN [CreatedBy] nvarchar(128) NULL;
+GO
+
+DECLARE @var24 sysname;
+SELECT @var24 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Categories]') AND [c].[name] = N'ModifiedBy');
+IF @var24 IS NOT NULL EXEC(N'ALTER TABLE [Categories] DROP CONSTRAINT [' + @var24 + '];');
+ALTER TABLE [Categories] ALTER COLUMN [ModifiedBy] nvarchar(128) NULL;
+GO
+
+DECLARE @var25 sysname;
+SELECT @var25 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Categories]') AND [c].[name] = N'CreatedBy');
+IF @var25 IS NOT NULL EXEC(N'ALTER TABLE [Categories] DROP CONSTRAINT [' + @var25 + '];');
+ALTER TABLE [Categories] ALTER COLUMN [CreatedBy] nvarchar(128) NULL;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20230220112658_AuditInfoAllocation', N'7.0.2');
+GO
+
+COMMIT;
+GO
+

@@ -3,4 +3,3 @@
         [ProductVersion] nvarchar(32) NOT NULL,
         CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
     );
-

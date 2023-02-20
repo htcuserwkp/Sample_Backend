@@ -22,5 +22,5 @@ public class OrderDto
 
     public long CustomerId { get; set; }
 
-    public string CustomerEmail { get; set; }
+    public string CustomerEmail { get; set; } = string.Empty;
 }

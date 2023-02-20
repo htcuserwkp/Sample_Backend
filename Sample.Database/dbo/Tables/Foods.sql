@@ -1,14 +1,21 @@
-﻿CREATE TABLE [Foods] (
-    [Id] bigint NOT NULL IDENTITY,
-    [Name] nvarchar(max) NOT NULL,
-    [Description] nvarchar(max) NOT NULL,
-    [Quantity] int NOT NULL,
-    [Price] decimal(18,2) NOT NULL,
-    [IsDeleted] bit NOT NULL,
-    [CategoryId] bigint NOT NULL,
-    CONSTRAINT [PK_Foods] PRIMARY KEY ([Id])
+﻿CREATE TABLE [dbo].[Foods] (
+    [Id]                BIGINT          IDENTITY (1, 1) NOT NULL,
+    [Name]              NVARCHAR (128)  NOT NULL,
+    [Description]       NVARCHAR (512)  NOT NULL,
+    [Quantity]          INT             NOT NULL,
+    [Price]             DECIMAL (18, 2) NOT NULL,
+    [IsDeleted]         BIT             NOT NULL,
+    [CategoryId]        BIGINT          DEFAULT (CONVERT([bigint],(0))) NOT NULL,
+    [IsFreshlyPrepared] BIT             DEFAULT (CONVERT([bit],(0))) NOT NULL,
+    [CreatedBy]         NVARCHAR (MAX)  NULL,
+    [ModifiedBy]        NVARCHAR (MAX)  NULL,
+    [ModifiedOn]        DATETIME2 (7)   NULL,
+    CONSTRAINT [PK_Foods] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_Foods_Categories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [dbo].[Categories] ([Id]) ON DELETE CASCADE
 );
+
+
 GO
-ALTER TABLE [Foods] ADD CONSTRAINT [FK_Foods_Categories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories] ([Id]);
-GO
-CREATE INDEX [IX_Foods_CategoryId] ON [Foods] ([CategoryId]);
+CREATE NONCLUSTERED INDEX [IX_Foods_CategoryId]
+    ON [dbo].[Foods]([CategoryId] ASC);
+

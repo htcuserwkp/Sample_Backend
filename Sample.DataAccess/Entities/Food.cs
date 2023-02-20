@@ -17,5 +17,5 @@ public class Food : BaseEntity
     public bool IsFreshlyPrepared { get; set; } = false;
 
     public long CategoryId { get; set; }
-    public virtual Category Category { get; set; } = null!;
+    //public virtual Category Category { get; set; } = null!;
 }

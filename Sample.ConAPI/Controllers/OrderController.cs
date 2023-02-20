@@ -17,7 +17,7 @@ public class OrderController : BaseApiController
         _logger = logger;
     }
     //GET: api/All-Orders
-    [HttpGet("GetAll")]
+    [HttpGet("get-orders")]
     public async Task<ActionResult<IEnumerable<OrderDto>>> GetAll()
     {
         _logger.LogInformation($"Get all Orders request received.");
@@ -47,7 +47,7 @@ public class OrderController : BaseApiController
         return Ok(response);
     }
 
-    [HttpGet("GetById")]
+    [HttpGet("get-order/{id:long}")]
     public async Task<ActionResult<OrderDto>> GetById(long id)
     {
         _logger.LogInformation($"Get Order for ID:{id}, request received.");

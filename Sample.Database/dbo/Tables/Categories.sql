@@ -1,7 +1,10 @@
-﻿CREATE TABLE [Categories] (
-    [Id] bigint NOT NULL IDENTITY,
-    [Name] nvarchar(max) NOT NULL,
-    [Description] nvarchar(max) NOT NULL,
-    [IsDeleted] bit NOT NULL,
-    CONSTRAINT [PK_Categories] PRIMARY KEY ([Id])
+﻿CREATE TABLE [dbo].[Categories] (
+    [Id]          BIGINT         IDENTITY (1, 1) NOT NULL,
+    [Name]        NVARCHAR (128) NOT NULL,
+    [Description] NVARCHAR (512) NOT NULL,
+    [IsDeleted]   BIT            NOT NULL,
+    [CreatedBy]   NVARCHAR (MAX) NULL,
+    [ModifiedBy]  NVARCHAR (MAX) NULL,
+    [ModifiedOn]  DATETIME2 (7)  NULL,
+    CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
