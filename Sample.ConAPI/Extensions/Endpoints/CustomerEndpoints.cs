@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using Sample.DataAccess;
 using Sample.DataAccess.Entities;
 using Sample.DataAccess.UnitOfWork;
 

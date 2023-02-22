@@ -11,6 +11,7 @@ public class UnitOfWork : UnitOfWorkBase, IUnitOfWork
     private IGenericRepository<Food>? _foodRepo;
     private IGenericRepository<Order>? _orderRepo;
     private IGenericRepository<Customer>? _customerRepo;
+    private IGenericRepository<Category>? _categoryRepo;
 
     public UnitOfWork(SampleAppDbContext context) : base(context)
     {
@@ -30,5 +31,10 @@ public class UnitOfWork : UnitOfWorkBase, IUnitOfWork
     public IGenericRepository<Customer> CustomerRepo
     {
         get { return _customerRepo ??= new GenericRepository<Customer>(_context); }
+    }
+
+    public IGenericRepository<Category> CategoryRepo
+    {
+        get { return _categoryRepo ??= new GenericRepository<Category>(_context); }
     }
 }

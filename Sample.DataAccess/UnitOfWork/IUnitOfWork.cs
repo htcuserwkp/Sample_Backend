@@ -9,4 +9,5 @@ public interface IUnitOfWork : IUnitOfWorkBase
     IGenericRepository<Food> FoodRepo { get; }
     IGenericRepository<Order> OrderRepo { get; }
     IGenericRepository<Customer> CustomerRepo { get; }
+    IGenericRepository<Category> CategoryRepo { get; }
 }
