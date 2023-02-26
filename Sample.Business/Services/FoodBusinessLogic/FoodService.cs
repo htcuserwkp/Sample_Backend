@@ -1,8 +1,11 @@
-﻿using System.Net;
+﻿using System.Linq.Expressions;
+using System.Net;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Sample.Business.Dtos;
 using Sample.Business.Dtos.FoodDtos;
 using Sample.Common.Helpers.Exceptions;
+using Sample.Common.Helpers.PredicateBuilder;
 using Sample.DataAccess.Entities;
 using Sample.DataAccess.UnitOfWork;
 
@@ -102,7 +105,7 @@ public class FoodService : IFoodService
             if (food is null) {
                 throw new CustomException {
                     CustomMessage = "Food Not Found",
-                    HttpStatusCode = System.Net.HttpStatusCode.NotFound
+                    HttpStatusCode = HttpStatusCode.NotFound
                 };
             }
 
@@ -152,20 +155,44 @@ public class FoodService : IFoodService
         return status;
     }
 
-    public async Task<FoodSearchDto> SearchAsync(string keyword, int skip = 0, int take = 10, string? orderBy = null, long categoryId = 0)
+    public async Task<FoodSearchDto> SearchFoodAsync(string keyword, int skip = 0, int take = 10, string? orderBy = null, long categoryId = 0)
     {
-        //TODO:
-        throw new NotImplementedException();
+        var foodPredicate = PredicateBuilder.True<Food>();
+
+        //filter by keyword
+        if (!string.IsNullOrEmpty(keyword)) {
+            foodPredicate = SearchExpressionFilter(foodPredicate, keyword!);
+        }
+
+        //filter by category
+        if (categoryId > 0) {
+            foodPredicate = foodPredicate.And(p => p.CategoryId == categoryId);
+        }
+
+        //TODO: order by
+
+        var foods = await _unitOfWork.FoodRepo.GetAsync(predicate:foodPredicate, skip:skip, take:take, orderBy:null);
+        return new FoodSearchDto {
+            Products = _mapper.Map<IEnumerable<FoodDto>>(foods),
+            Page = new PaginationDto() {
+                CurrentCount = foods.Count(),
+                TotalCount = await _unitOfWork.FoodRepo.GetCountAsync(foodPredicate)
+            }
+        };
     }
 
     #region Private Methods
-    //private IEnumerable<FoodDto> GetFoodsList(IEnumerable<Food> foods)
-    //{
+    private static Expression<Func<Food, bool>> SearchExpressionFilter(Expression<Func<Food, bool>> foodPredicate, string keyword) {
+        return foodPredicate.And(c => (c.Name.Contains(keyword) ||
+                                       c.Description.Contains(keyword) ||
+                                       c.Category.Description.Contains(keyword) ||
+                                       c.Category.Name.Contains(keyword)));
+    }
+    //private IEnumerable<FoodDto> GetFoodsList(IEnumerable<Food> foods) {
     //    return _mapper.Map<IEnumerable<FoodDto>>(foods);
     //}
 
-    //private FoodDto GetFoodDetails(Food food)
-    //{
+    //private FoodDto GetFoodDetails(Food food) {
     //    return _mapper.Map<FoodDto>(food);
     //}
     #endregion

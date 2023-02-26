@@ -16,13 +16,21 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         _dbSet = context.Set<TEntity>();
     }
 
-    public virtual async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null)
+    public virtual async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = 0)
     {
         IQueryable<TEntity> queryable = _dbSet;
 
         var predicateBuilder = GetPredicateBuilder(predicate);
 
         queryable = queryable.Where(predicateBuilder);
+
+        if (orderBy != null) {
+            queryable = orderBy(queryable);
+        }
+
+        if (take != 0) {
+            queryable = queryable.Skip(skip).Take(take);
+        }
 
         return await queryable.ToListAsync();
     }
@@ -92,6 +100,16 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     public virtual async Task<bool> IsActive(long id) {
         var entity = await _dbSet.FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted);
         return entity is not null;
+    }
+
+    public virtual async Task<long> GetCountAsync(Expression<Func<TEntity, bool>>? predicate = null) {
+        var predicateBuilder = PredicateBuilder.True<TEntity>();
+        predicateBuilder = predicateBuilder.And(c => !c.IsDeleted);
+
+        if (predicate != null)
+            predicateBuilder = predicateBuilder.And(predicate);
+
+        return await _dbSet.Where(predicateBuilder).CountAsync();
     }
 
     #region Provate Methods

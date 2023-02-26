@@ -5,7 +5,7 @@ namespace Sample.DataAccess.GenericRepository;
 
 public interface IGenericRepository<TEntity> where TEntity : BaseEntity
 {
-    Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null);
+    Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = 0);
 
     Task<TEntity> GetByIdAsync(long id);
 
@@ -22,4 +22,6 @@ public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     Task DeleteAsync(TEntity entity);
 
     Task<bool> IsActive(long id);
+
+    Task<long> GetCountAsync(Expression<Func<TEntity, bool>>? where = null);
 }

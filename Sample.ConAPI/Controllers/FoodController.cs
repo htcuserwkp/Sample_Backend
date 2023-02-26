@@ -92,4 +92,25 @@ public class FoodController : BaseApiController
 
         return Ok(response);
     }
+
+    [HttpGet("search")]
+    public async Task<ActionResult<ResponseBody<FoodSearchDto>>> GetProductsForKeyword(string? keyword = null,
+                                                                                        int skip = 0,
+                                                                                        int take = 10,
+                                                                                        string? orderBy = null,
+                                                                                        long categoryId = 0) {
+        _logger.LogInformation("Search Food request received.");
+        var response = new ResponseBody<FoodSearchDto>();
+
+        var result = await _foodService
+            .SearchFoodAsync(keyword!, skip, take, orderBy, categoryId)
+            .ConfigureAwait(false);
+        
+        response.Data = result;
+        response.Message = "Food details retrieved successfully";
+
+        _logger.LogInformation(response.Message);
+
+        return Ok(response);
+    }
 }

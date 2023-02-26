@@ -8,7 +8,7 @@ public interface IFoodService {
     Task<FoodDto> GetByIdAsync(long id);
     Task<string> UpdateFoodAsync(FoodDto foodDetails);
     Task<string> DeleteFoodAsync(long id);
-    Task<FoodSearchDto> SearchAsync(string keyword,
+    Task<FoodSearchDto> SearchFoodAsync(string keyword,
         int skip = 0,
         int take = 10,
         string? orderBy = null,
