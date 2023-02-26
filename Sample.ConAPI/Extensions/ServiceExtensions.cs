@@ -25,6 +25,8 @@ public static class ServiceExtensions {
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ICustomerService, CustomerService>();
 
+        services.ConfigureValidationErrors();
+
         ServiceProvider = services.BuildServiceProvider(true);
     }
 }

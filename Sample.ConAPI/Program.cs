@@ -12,8 +12,9 @@ Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(config)
     .CreateLogger();
 
-// Add services to the container.
+
 builder.Host.UseSerilog();
+// Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddMemoryCache();
@@ -44,7 +45,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapCategoryEndpoints();
-app.MapCustomerEndpoints();
+app.MapCategoryEndpoints(loggerFactory);
+app.MapCustomerEndpoints(loggerFactory);
 
 app.Run();

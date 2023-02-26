@@ -2,10 +2,8 @@
 
 namespace Sample.Common.Helpers.Exceptions;
 
-public class ValidationErrors : ErrorResponse
-{
-    public ValidationErrors()
-    {
+public class ValidationErrors : ErrorResponse {
+    public ValidationErrors() {
         StatusCode = (int)HttpStatusCode.BadRequest;
         Message = "Bad Request";
     }

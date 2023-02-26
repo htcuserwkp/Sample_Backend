@@ -1,8 +1,12 @@
-﻿namespace Sample.Business.Dtos.CategoryDtos;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Sample.Business.Dtos.CategoryDtos;
 
 public class CategoryAddDto
 {
-    public string Name { get; set; } = string.Empty;
+    [Required(ErrorMessage = $"{nameof(Name)} is required")]
+    public string Name { get; set; } = null!;
 
-    public string Description { get; set; } = string.Empty;
+    [Required(ErrorMessage = $"{nameof(Description)} is required")]
+    public string Description { get; set; } = null!;
 }
