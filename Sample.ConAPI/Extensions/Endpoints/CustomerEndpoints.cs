@@ -1,61 +1,69 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Sample.DataAccess.Entities;
-using Sample.DataAccess.UnitOfWork;
+using Sample.Business.Dtos.CustomerDtos;
+using Sample.Business.Services.CustomerBusinessLogic;
+using Sample.Common.Helpers.Response;
 
 namespace Sample.API.Extensions.Endpoints;
 
-public static class CustomerEndpoints
-{
-    //TODO: Organize to comply solution architecture
-    public static void MapCustomerEndpoints(this IEndpointRouteBuilder routes)
-    {
-        var group = routes.MapGroup("/api/v1/Customer").WithTags(nameof(Customer));
+public static class CustomerEndpoints {
+    public static void MapCustomerEndpoints(this IEndpointRouteBuilder routes) {
+        var group = routes.MapGroup("/api/v1/customer").WithTags("Customer");
 
-        group.MapGet("/", async (IUnitOfWork db) => await db.CustomerRepo.GetAllAsync())
-        .WithName("GetAllCustomers")
-        .WithOpenApi();
 
-        group.MapGet("/{id:long}", async Task<Results<Ok<Customer>, NotFound>> (long id, IUnitOfWork db) => await db.CustomerRepo.GetByIdAsync(id)
-                is { } model
-                ? TypedResults.Ok(model)
-                : TypedResults.NotFound())
-        .WithName("GetCustomerById")
-        .WithOpenApi();
+        group.MapGet("/all", async Task<Results<Ok<ResponseBody<IEnumerable<CustomerDto>>>, NotFound>> (ICustomerService customerService) => {
+            var response = new ResponseBody<IEnumerable<CustomerDto>> {
+                Data = await customerService.GetAllAsync().ConfigureAwait(false),
+                Message = "Customers retrieved successfully"
+            };
 
-        group.MapPut("/{id:long}", async Task<Results<NotFound, NoContent>> (long id, Customer customer, IUnitOfWork db) =>
-        {
-            var foundModel = await db.CustomerRepo.GetByIdAsync(id);
-
-            if (foundModel is null)
-            {
-                return TypedResults.NotFound();
-            }
-
-            await db.CustomerRepo.UpdateAsync(customer);
-            await db.SaveChangesAsync();
-
-            return TypedResults.NoContent();
+            return TypedResults.Ok(response);
         })
-        .WithName("UpdateCustomer")
-        .WithOpenApi();
+            .WithName("GetAllCustomers")
+            .WithOpenApi();
 
-        group.MapPost("/", async (Customer customer, IUnitOfWork db) =>
-        {
-            await db.CustomerRepo.AddAsync(customer);
-            await db.SaveChangesAsync();
-            return TypedResults.Created($"/api/v1/Customer/{customer.Id}", customer);
-        })
-        .WithName("CreateCustomer")
-        .WithOpenApi();
 
-        group.MapDelete("/{id:long}", async Task<Results<Ok<Customer>, NotFound>> (long id, IUnitOfWork db) =>
-        {
-            if (await db.CustomerRepo.GetByIdAsync(id) is not { } customer) return TypedResults.NotFound();
-            await db.CustomerRepo.DeleteAsync(customer);
-            await db.SaveChangesAsync();
-            return TypedResults.Ok(customer);
+        group.MapGet("/{id:long}", async Task<Results<Ok<ResponseBody<CustomerDto>>, NotFound>> (long id, ICustomerService customerService) => {
+            var response = new ResponseBody<CustomerDto> {
+                Data = await customerService.GetByIdAsync(id).ConfigureAwait(false),
+                Message = "Customer retrieved successfully"
+            };
+
+            return TypedResults.Ok(response);
         })
-        .WithName("DeleteCustomer")
-        .WithOpenApi();
+            .WithName("GetCustomerById")
+            .WithOpenApi();
+
+
+        group.MapPut("/update", async Task<Results<Ok<ResponseBody<string>>, NotFound, NoContent>> (CustomerDto customerDetails, ICustomerService customerService) => {
+            var response = new ResponseBody<string> {
+                Message = await customerService.UpdateCustomerAsync(customerDetails).ConfigureAwait(false)
+            };
+
+            return TypedResults.Ok(response);
+        })
+            .WithName("UpdateCustomer")
+            .WithOpenApi();
+
+
+        group.MapPost("/add", async Task<Results<Ok<ResponseBody<string>>, NotFound, NoContent>> (CustomerAddDto customerDetails, ICustomerService customerService) => {
+            var response = new ResponseBody<string> {
+                Message = await customerService.AddCustomerAsync(customerDetails).ConfigureAwait(false)
+            };
+
+            return TypedResults.Ok(response);
+        })
+            .WithName("AddCustomer")
+            .WithOpenApi();
+
+
+        group.MapDelete("/{id:long}", async Task<Results<Ok<ResponseBody<string>>, NotFound, NoContent>> (long id, ICustomerService customerService) => {
+            var response = new ResponseBody<string> {
+                Message = await customerService.DeleteCustomerAsync(id).ConfigureAwait(false)
+            };
+
+            return TypedResults.Ok(response);
+        })
+            .WithName("DeleteCustomer")
+            .WithOpenApi();
     }
 }
