@@ -6,21 +6,19 @@ using Sample.Business.Services.FoodBusinessLogic;
 
 namespace Sample.API.Controllers;
 
-public class FoodController : BaseApiController
-{
+public class FoodController : BaseApiController {
+
     private readonly IFoodService _foodService;
     private readonly ILogger<FoodController> _logger;
 
-    public FoodController(IFoodService foodService, ILogger<FoodController> logger)
-    {
+    public FoodController(IFoodService foodService, ILogger<FoodController> logger) {
         _foodService = foodService;
         _logger = logger;
     }
 
     //GET: api/All-Food
     [HttpGet("all")]
-    public async Task<ActionResult<ResponseBody<IEnumerable<FoodDto>>>> GetAllFood()
-    {
+    public async Task<ActionResult<ResponseBody<IEnumerable<FoodDto>>>> GetAllFood() {
         _logger.LogInformation("Get all Food request received.");
         var response = new ResponseBody<IEnumerable<FoodDto>>();
 
@@ -35,8 +33,7 @@ public class FoodController : BaseApiController
 
     // GET: api/Food-By-Id/5
     [HttpGet("{id:long}")]
-    public async Task<ActionResult<ResponseBody<FoodDto>>> GetFood(long id)
-    {
+    public async Task<ActionResult<ResponseBody<FoodDto>>> GetFood(long id) {
         _logger.LogInformation($"Get Food request received for ID: {id}.");
         var response = new ResponseBody<FoodDto>();
 
@@ -50,8 +47,7 @@ public class FoodController : BaseApiController
 
     // POST: api/Add-Food
     [HttpPost("add")]
-    public async Task<IActionResult> SaveFood([FromBody] FoodAddDto foodDetails)
-    {
+    public async Task<IActionResult> SaveFood([FromBody] FoodAddDto foodDetails) {
         _logger.LogInformation($"Add request received for Food: {JsonSerializer.Serialize(foodDetails)}.");
         var response = new ResponseBody<string>();
 
@@ -65,8 +61,7 @@ public class FoodController : BaseApiController
 
     // PUT: api/Food-Update
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateFood([FromBody] FoodDto foodDetails)
-    {
+    public async Task<IActionResult> UpdateFood([FromBody] FoodDto foodDetails) {
         _logger.LogInformation($"Update request received for Food: {JsonSerializer.Serialize(foodDetails)}.");
         var response = new ResponseBody<string>();
 
@@ -80,8 +75,7 @@ public class FoodController : BaseApiController
 
     // DELETE: api/Food-Delete
     [HttpDelete("{id:long}")]
-    public async Task<IActionResult> DeleteFood(long id)
-    {
+    public async Task<IActionResult> DeleteFood(long id) {
         _logger.LogInformation($"Delete request received for Food ID: {id}.");
         var response = new ResponseBody<string>();
 
@@ -103,9 +97,9 @@ public class FoodController : BaseApiController
         var response = new ResponseBody<FoodSearchDto>();
 
         var result = await _foodService
-            .SearchFoodAsync(keyword!, skip, take, orderBy, categoryId)
+            .SearchFoodsAsync(keyword!, skip, take, orderBy, categoryId)
             .ConfigureAwait(false);
-        
+
         response.Data = result;
         response.Message = "Food details retrieved successfully";
 

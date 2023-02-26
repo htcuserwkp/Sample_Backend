@@ -16,19 +16,23 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         _dbSet = context.Set<TEntity>();
     }
 
-    public virtual async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = 0)
-    {
+    public virtual async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null, 
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, 
+        int skip = 0, 
+        int take = 10) {
+
         IQueryable<TEntity> queryable = _dbSet;
 
-        var predicateBuilder = GetPredicateBuilder(predicate);
+        if (predicate is not null) {
+            var predicateBuilder = GetPredicateBuilder(predicate);
+            queryable = queryable.Where(predicateBuilder);
+        }
 
-        queryable = queryable.Where(predicateBuilder);
-
-        if (orderBy != null) {
+        if (orderBy is not null) {
             queryable = orderBy(queryable);
         }
 
-        if (take != 0) {
+        if (take is not 0) {
             queryable = queryable.Skip(skip).Take(take);
         }
 

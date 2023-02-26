@@ -6,20 +6,17 @@ using Sample.Business.Services.OrderBusinessLogic;
 
 namespace Sample.API.Controllers;
 
-public class OrderController : BaseApiController
-{
+public class OrderController : BaseApiController {
     private readonly IOrderService _orderService;
     private readonly ILogger<OrderController> _logger;
 
-    public OrderController(IOrderService orderService, ILogger<OrderController> logger)
-    {
+    public OrderController(IOrderService orderService, ILogger<OrderController> logger) {
         _orderService = orderService;
         _logger = logger;
     }
     //GET: api/All-Orders
     [HttpGet("get-orders")]
-    public async Task<ActionResult<IEnumerable<OrderDto>>> GetAll()
-    {
+    public async Task<ActionResult<IEnumerable<OrderDto>>> GetAll() {
         _logger.LogInformation($"Get all Orders request received.");
         var response = new ResponseBody<IEnumerable<OrderDto>>();
 
@@ -33,8 +30,7 @@ public class OrderController : BaseApiController
     }
 
     [HttpGet("GetByCustomer")]
-    public async Task<ActionResult<ResponseBody<IEnumerable<OrderDto>>>> GetByCustomer(long customerId)
-    {
+    public async Task<ActionResult<ResponseBody<IEnumerable<OrderDto>>>> GetByCustomer(long customerId) {
         _logger.LogInformation($"Get all Orders for Customer ID:{customerId}, request received.");
         var response = new ResponseBody<IEnumerable<OrderDto>>();
 
@@ -48,8 +44,7 @@ public class OrderController : BaseApiController
     }
 
     [HttpGet("get-order/{id:long}")]
-    public async Task<ActionResult<OrderDto>> GetById(long id)
-    {
+    public async Task<ActionResult<OrderDto>> GetById(long id) {
         _logger.LogInformation($"Get Order for ID:{id}, request received.");
         var response = new ResponseBody<OrderDto>();
 
@@ -63,8 +58,7 @@ public class OrderController : BaseApiController
     }
 
     [HttpGet("GetByOrderNumber")]
-    public async Task<ActionResult<OrderDto>> GetByOrderNumber(string orderNumber)
-    {
+    public async Task<ActionResult<OrderDto>> GetByOrderNumber(string orderNumber) {
         _logger.LogInformation($"Get Order for #{orderNumber}, request received.");
         var response = new ResponseBody<OrderDto>();
 
@@ -78,8 +72,7 @@ public class OrderController : BaseApiController
     }
 
     [HttpPost("PlaceOrder")]
-    public async Task<IActionResult> PlaceOrder([FromBody] OrderAddDto orderDetails)
-    {
+    public async Task<IActionResult> PlaceOrder([FromBody] OrderAddDto orderDetails) {
         _logger.LogInformation($"Place order request received for Order: {JsonSerializer.Serialize(orderDetails)}.");
         var response = new ResponseBody<string>();
 

@@ -6,15 +6,11 @@ using Sample.Common.Helpers.Exceptions;
 
 namespace Sample.API.Extensions;
 
-public static class ExceptionMiddlewareExtensions
-{
-    public static void ConfigureExceptionHandler(this IApplicationBuilder app, ILoggerFactory loggerFactory, IHostEnvironment env)
-    {
+public static class ExceptionMiddlewareExtensions {
+    public static void ConfigureExceptionHandler(this IApplicationBuilder app, ILoggerFactory loggerFactory, IHostEnvironment env) {
         app.UseStatusCodePagesWithReExecute("/errors/{0}");
-        app.UseExceptionHandler(appError =>
-        {
-            appError.Run(async httpContext =>
-            {
+        app.UseExceptionHandler(appError => {
+            appError.Run(async httpContext => {
                 var logger = loggerFactory.CreateLogger("ConfigureBuildInExceptionHandler");
 
                 httpContext.Response.ContentType = "application/json";
@@ -24,11 +20,9 @@ public static class ExceptionMiddlewareExtensions
 
                 dynamic baseException = ((ExceptionHandlerFeature)contextFeature!).Error;
 
-                var serializerOptionForCamelCase = new JsonSerializerOptions
-                    { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+                var serializerOptionForCamelCase = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-                if (baseException != null && baseException!.ToString().Contains("CustomException"))
-                {
+                if (baseException != null && baseException!.ToString().Contains("CustomException")) {
                     var customException = (CustomException)baseException!;
 
                     logger.LogError($"An exception triggered: {customException.CustomMessage}", contextRequest.Method,
@@ -38,16 +32,14 @@ public static class ExceptionMiddlewareExtensions
 
                     await httpContext.Response.WriteAsync(
                         JsonSerializer.Serialize(
-                            new ErrorResponse()
-                            {
+                            new ErrorResponse() {
                                 StatusCode = httpContext.Response.StatusCode,
                                 Message = customException.CustomMessage
                             },
                             serializerOptionForCamelCase
                         ));
                 }
-                else
-                {
+                else {
                     logger.LogError($"An unhandled exception occurred: {contextFeature.Error.Message}",
                         contextRequest.Method, contextRequest.Path);
 
@@ -55,8 +47,7 @@ public static class ExceptionMiddlewareExtensions
 
                     await httpContext.Response.WriteAsync(
                         JsonSerializer.Serialize(
-                            new ErrorResponse()
-                            {
+                            new ErrorResponse() {
                                 StatusCode = httpContext.Response.StatusCode,
                                 Message = env.IsDevelopment()
                                     ? contextFeature.Error.Message

@@ -4,7 +4,6 @@ namespace Sample.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class BaseApiController : ControllerBase
-{
-    
+public class BaseApiController : ControllerBase {
+
 }

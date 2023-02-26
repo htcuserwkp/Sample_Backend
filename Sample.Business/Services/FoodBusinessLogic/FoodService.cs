@@ -11,27 +11,22 @@ using Sample.DataAccess.UnitOfWork;
 
 namespace Sample.Business.Services.FoodBusinessLogic;
 
-public class FoodService : IFoodService
-{
+public class FoodService : IFoodService {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<FoodService> _logger;
     private readonly IMapper _mapper;
 
-    public FoodService(IUnitOfWork unitOfWork, ILogger<FoodService> logger, IMapper mapper)
-    {
+    public FoodService(IUnitOfWork unitOfWork, ILogger<FoodService> logger, IMapper mapper) {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<FoodDto>> GetAllFoodAsync()
-    {
+    public async Task<IEnumerable<FoodDto>> GetAllFoodAsync() {
         var foods = (await _unitOfWork.FoodRepo.GetAllAsync()).ToList();
 
-        if (!foods.Any())
-        {
-            throw new CustomException
-            {
+        if (!foods.Any()) {
+            throw new CustomException {
                 CustomMessage = "No Foods Found",
                 HttpStatusCode = HttpStatusCode.NotFound
             };
@@ -41,12 +36,10 @@ public class FoodService : IFoodService
         return foodList;
     }
 
-    public async Task<string> AddFoodAsync(FoodAddDto foodDetails)
-    {
+    public async Task<string> AddFoodAsync(FoodAddDto foodDetails) {
         string status;
 
-        try
-        {
+        try {
             //TODO:Do validations
 
             //check category
@@ -64,8 +57,7 @@ public class FoodService : IFoodService
             status = "Food added successfully";
             _logger.LogDebug(status);
         }
-        catch (Exception e) 
-        {
+        catch (Exception e) {
             status = "Food failed to add";
             _logger.LogError($"{status} Error: {e}");
             throw;
@@ -74,14 +66,11 @@ public class FoodService : IFoodService
         return status;
     }
 
-    public async Task<FoodDto> GetByIdAsync(long id)
-    {
+    public async Task<FoodDto> GetByIdAsync(long id) {
         var food = await _unitOfWork.FoodRepo.GetByIdAsync(id);
 
-        if (food is null)
-        {
-            throw new CustomException
-            {
+        if (food is null) {
+            throw new CustomException {
                 CustomMessage = "No Food Found",
                 HttpStatusCode = HttpStatusCode.NotFound
             };
@@ -93,11 +82,9 @@ public class FoodService : IFoodService
         return foodInfo;
     }
 
-    public async Task<string> UpdateFoodAsync(FoodDto foodDetails)
-    {
+    public async Task<string> UpdateFoodAsync(FoodDto foodDetails) {
         string status;
-        try 
-        {
+        try {
             //TODO: validate details
 
             var food = await _unitOfWork.FoodRepo.GetByIdAsync(foodDetails.Id);
@@ -118,8 +105,7 @@ public class FoodService : IFoodService
             status = "Food updated successfully";
             _logger.LogDebug(status);
         }
-        catch (Exception e) 
-        {
+        catch (Exception e) {
             status = "Food failed to update";
             _logger.LogError($"{status} Error: {e}");
             throw;
@@ -128,11 +114,9 @@ public class FoodService : IFoodService
         return status;
     }
 
-    public async Task<string> DeleteFoodAsync(long id)
-    {
+    public async Task<string> DeleteFoodAsync(long id) {
         string status;
-        try 
-        {
+        try {
             //check availability
             if (!await _unitOfWork.FoodRepo.IsActive(id)) {
                 throw new CustomException {
@@ -146,8 +130,7 @@ public class FoodService : IFoodService
             status = "Food deleted successfully";
             _logger.LogDebug(status);
         }
-        catch (Exception e) 
-        {
+        catch (Exception e) {
             status = "Food deletion failed";
             _logger.LogError($"{status} Error: {e}");
             throw;
@@ -155,13 +138,12 @@ public class FoodService : IFoodService
         return status;
     }
 
-    public async Task<FoodSearchDto> SearchFoodAsync(string keyword, int skip = 0, int take = 10, string? orderBy = null, long categoryId = 0)
-    {
+    public async Task<FoodSearchDto> SearchFoodsAsync(string keyword, int skip = 0, int take = 10, string? orderBy = null, long categoryId = 0) {
         var foodPredicate = PredicateBuilder.True<Food>();
 
         //filter by keyword
         if (!string.IsNullOrEmpty(keyword)) {
-            foodPredicate = SearchExpressionFilter(foodPredicate, keyword!);
+            foodPredicate = SearchExpressionFilter(foodPredicate, keyword);
         }
 
         //filter by category
@@ -171,9 +153,9 @@ public class FoodService : IFoodService
 
         //TODO: order by
 
-        var foods = await _unitOfWork.FoodRepo.GetAsync(predicate:foodPredicate, skip:skip, take:take, orderBy:null);
+        var foods = await _unitOfWork.FoodRepo.GetAsync(predicate: foodPredicate, skip: skip, take: take, orderBy: null);
         return new FoodSearchDto {
-            Products = _mapper.Map<IEnumerable<FoodDto>>(foods),
+            Foods = _mapper.Map<IEnumerable<FoodDto>>(foods),
             Page = new PaginationDto() {
                 CurrentCount = foods.Count(),
                 TotalCount = await _unitOfWork.FoodRepo.GetCountAsync(foodPredicate)

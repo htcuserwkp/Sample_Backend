@@ -5,7 +5,10 @@ namespace Sample.DataAccess.GenericRepository;
 
 public interface IGenericRepository<TEntity> where TEntity : BaseEntity
 {
-    Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = 0);
+    Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null, 
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, 
+        int skip = 0, 
+        int take = 10);
 
     Task<TEntity> GetByIdAsync(long id);
 

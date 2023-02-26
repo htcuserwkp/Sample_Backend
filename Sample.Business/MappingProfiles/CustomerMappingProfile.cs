@@ -5,5 +5,8 @@ using Sample.DataAccess.Entities;
 namespace Sample.Business.MappingProfiles;
 
 public class CustomerMappingProfile : Profile {
-    public CustomerMappingProfile() => CreateMap<Customer, CustomerDto>().ReverseMap();
+    public CustomerMappingProfile() {
+        CreateMap<Customer, CustomerDto>().ReverseMap();
+        CreateMap<CustomerAddDto, Customer>();
+    }
 }
