@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Sample.API.Controllers.SampleControllers;
 
-public class MathApiController : BaseApiController
+public class MathApiController : ControllerBase
 {
     private readonly ILogger<MathApiController> _logger;
 
