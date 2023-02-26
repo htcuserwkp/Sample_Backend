@@ -89,6 +89,11 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         await UpdateAsync(entity);
     }
 
+    public virtual async Task<bool> IsActive(long id) {
+        var entity = await _dbSet.FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted);
+        return entity is not null;
+    }
+
     #region Provate Methods
     private static void ValidateEntity(TEntity entity)
     {

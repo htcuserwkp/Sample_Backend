@@ -20,4 +20,6 @@ public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     Task DeleteAsync(long id);
 
     Task DeleteAsync(TEntity entity);
+
+    Task<bool> IsActive(long id);
 }

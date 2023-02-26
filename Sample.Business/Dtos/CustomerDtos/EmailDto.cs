@@ -1,4 +1,4 @@
-﻿namespace Sample.Common.Dtos.CustomerDtos;
+﻿namespace Sample.Business.Dtos.CustomerDtos;
 
 public class EmailDto
 {

@@ -1,6 +1,6 @@
-﻿using Sample.Common.Dtos.OrderDtos;
+﻿using Sample.Business.Dtos.OrderDtos;
 
-namespace Sample.Business.OrderBusinessLogic;
+namespace Sample.Business.Services.OrderBusinessLogic;
 
 public interface IOrderService
 {

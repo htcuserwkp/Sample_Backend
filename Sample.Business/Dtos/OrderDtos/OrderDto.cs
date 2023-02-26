@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Sample.Common.Dtos.FoodDtos;
-
-namespace Sample.Common.Dtos.OrderDtos;
+﻿namespace Sample.Business.Dtos.OrderDtos;
 
 public class OrderDto
 {

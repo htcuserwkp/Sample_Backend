@@ -1,5 +1,7 @@
-﻿using Sample.Business.FoodBusinessLogic;
-using Sample.Business.OrderBusinessLogic;
+﻿using Sample.Business.MappingProfiles;
+using Sample.Business.Services.CategoryBusinessLogic;
+using Sample.Business.Services.FoodBusinessLogic;
+using Sample.Business.Services.OrderBusinessLogic;
 using Sample.DataAccess;
 using Sample.DataAccess.UnitOfWork;
 
@@ -13,9 +15,14 @@ public static class ServiceExtensions
     {
         services.AddDbContext<SampleAppDbContext>();
 
+        services.AddAutoMapper(typeof(OrderMappingProfile),
+                                typeof(FoodMappingProfile),
+                                typeof(CategoryMappingProfile));
+
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IFoodService, FoodService>();
         services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<ICategoryService, CategoryService>();
 
         ServiceProvider = services.BuildServiceProvider(true);
     }

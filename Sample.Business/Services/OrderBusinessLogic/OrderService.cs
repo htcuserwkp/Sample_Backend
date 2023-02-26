@@ -1,21 +1,25 @@
-﻿using Microsoft.Extensions.Logging;
-using Sample.Common.Dtos.OrderDtos;
+﻿using System.Net;
+using AutoMapper;
+using Microsoft.Extensions.Logging;
+using Sample.Business.Dtos.CustomerDtos;
+using Sample.Business.Dtos.OrderDtos;
 using Sample.Common.Helpers.Exceptions;
 using Sample.DataAccess.Entities;
 using Sample.DataAccess.UnitOfWork;
-using System.Net;
-using Sample.Common.Dtos.CustomerDtos;
 
-namespace Sample.Business.OrderBusinessLogic;
+namespace Sample.Business.Services.OrderBusinessLogic;
 
 public class OrderService : IOrderService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<OrderService> _logger;
-    public OrderService(IUnitOfWork unitOfWork, ILogger<OrderService> logger)
+    private readonly IMapper _mapper;
+
+    public OrderService(IUnitOfWork unitOfWork, ILogger<OrderService> logger, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _mapper = mapper;
     }
 
     public async Task<OrderDto> GetByIdAsync(long id)
@@ -163,52 +167,30 @@ public class OrderService : IOrderService
     }
 
     #region Private Methods
-    private static  ICollection<OrderItem> GetOrderItems(IEnumerable<Food> foods, IEnumerable<OrderItemAddDto> orderDetailsOrderItems)
-    {
-        return foods.Select(item => new OrderItem()
-        {
-            FoodId = item.Id,
-            FoodName = item.Name,
-            Price = item.Price,
-            Quantity = (orderDetailsOrderItems.FirstOrDefault(i => i.FoodId == item.Id)!).Quantity
-        }).ToList();
-    }
 
-    private static OrderDto GetOrderDetails(Order order, string customerEmail)
+    private IEnumerable<OrderDto> GetOrderListResponse(IEnumerable<Order> orders, IEnumerable<EmailDto> emailDetails)
     {
-        return new OrderDto()
-        {
-            Id = order.Id,
-            OrderNumber = order.OrderNumber,
-            CustomerId = order.CustomerId,
-            CustomerEmail = customerEmail,
-            OrderPlaced = order.OrderPlaced,
-            SubTotal = order.SubTotal,
-            ServiceCharge = order.ServiceCharge,
-            Discount = order.Discount,
-            Total = order.Total,
-            OrderItems = GetOrderItemsList(order.OrderItems)
-        };
-    }
+        var customerEmails = emailDetails.ToDictionary(e => e.Id, e => e.Email);
 
-    private static IEnumerable<OrderItemDto> GetOrderItemsList(IEnumerable<OrderItem> orderOrderItems)
-    {
-        return orderOrderItems.Select(item => new OrderItemDto()
-        {
-            Quantity = item.Quantity,
-            Price = item.Price,
-            FoodId = item.FoodId,
-            FoodName = item.FoodName
-        }).ToList();
-    }
-
-    private static IEnumerable<OrderDto> GetOrderListResponse(IEnumerable<Order> orders, IEnumerable<EmailDto> emailDetails)
-    {
         return orders
-                .Select(order => GetOrderDetails(
-                    order, 
-                    emailDetails.FirstOrDefault(e => e.Id == order.CustomerId)!.Email))
-                .ToList();
+            .Select(order => GetOrderDetails(order, customerEmails[order.CustomerId]))
+            .ToList();
+    }
+
+    private OrderDto GetOrderDetails(Order order, string customerEmail)
+    {
+        return _mapper.Map<OrderDto>(order, opt => opt.Items["CustomerEmail"] = customerEmail);
+    }
+
+    private static ICollection<OrderItem> GetOrderItems(IEnumerable<Food> foods, IEnumerable<OrderItemAddDto> orderDetailsOrderItems)
+    {
+        return foods.Select(food => new OrderItem
+        {
+            FoodId = food.Id,
+            FoodName = food.Name,
+            Price = food.Price,
+            Quantity = orderDetailsOrderItems.FirstOrDefault(i => i.FoodId == food.Id)?.Quantity ?? 0
+        }).ToList();
     }
     #endregion
 }

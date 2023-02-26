@@ -1,4 +1,4 @@
-﻿namespace Sample.Common.Dtos.OrderDtos;
+﻿namespace Sample.Business.Dtos.OrderDtos;
 
 public class OrderItemAddDto
 {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Sample.Business.FoodBusinessLogic;
-using Sample.Common.Dtos.FoodDtos;
 using Sample.Common.Helpers.Response;
 using System.Text.Json;
+using Sample.Business.Dtos.FoodDtos;
+using Sample.Business.Services.FoodBusinessLogic;
 
 namespace Sample.API.Controllers;
 
@@ -34,7 +34,7 @@ public class FoodController : BaseApiController
     }
 
     // GET: api/Food-By-Id/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:long}")]
     public async Task<ActionResult<ResponseBody<FoodDto>>> GetFood(long id)
     {
         _logger.LogInformation($"Get Food request received for ID: {id}.");
@@ -79,7 +79,7 @@ public class FoodController : BaseApiController
     }
 
     // DELETE: api/Food-Delete
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:long}")]
     public async Task<IActionResult> DeleteFood(long id)
     {
         _logger.LogInformation($"Delete request received for Food ID: {id}.");

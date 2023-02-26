@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Sample.Common.Dtos.OrderDtos;
+﻿namespace Sample.Business.Dtos.OrderDtos;
 
 public class OrderItemDto : OrderItemAddDto
 {

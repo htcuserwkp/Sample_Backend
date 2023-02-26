@@ -25,5 +25,5 @@ public class Order : BaseEntity
     public virtual ICollection<OrderItem> OrderItems { get; set; } = null!;
 
     public long CustomerId { get; set; }
-    //public virtual Customer Customer { get; set; } = null!;
+    public virtual Customer Customer { get; set; } = null!;
 }

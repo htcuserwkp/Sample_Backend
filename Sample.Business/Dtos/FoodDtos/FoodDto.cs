@@ -1,4 +1,4 @@
-﻿namespace Sample.Common.Dtos.FoodDtos
+﻿namespace Sample.Business.Dtos.FoodDtos
 {
     public class FoodDto : FoodAddDto
     {
