@@ -8,7 +8,9 @@ namespace Sample.API.Extensions;
 
 public static class ExceptionMiddlewareExtensions {
     public static void ConfigureExceptionHandler(this IApplicationBuilder app, ILoggerFactory loggerFactory, IHostEnvironment env) {
+
         app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
         app.UseExceptionHandler(appError => {
             appError.Run(async httpContext => {
                 var logger = loggerFactory.CreateLogger("ConfigureBuildInExceptionHandler");
