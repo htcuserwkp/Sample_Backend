@@ -55,7 +55,10 @@ public static class ExceptionMiddlewareExtensions {
                                 httpContext.Response.StatusCode,
                                 Message = "Bad Request",
                                 Errors = validationException.Errors
-                                    .Select(e => $"{e.PropertyName} {e.ErrorMessage.Split("' ")[1]}")
+                                    .Select(e => e.ErrorMessage)
+                                    //.Select(e => $"{e.PropertyName} {((e.ErrorMessage.Contains("' ")) 
+                                    //    ? e.ErrorMessage.Split("' ")[1] 
+                                    //    : e.ErrorMessage)}")
                                     .ToArray()
                             },
                             serializerOptionForCamelCase

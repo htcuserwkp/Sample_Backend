@@ -5,6 +5,7 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Sample.Business.Dtos;
 using Sample.Business.Dtos.CategoryDtos;
+using Sample.Business.Validators;
 using Sample.Business.Validators.CategoryValidators;
 using Sample.Common.Helpers.Exceptions;
 using Sample.Common.Helpers.PredicateBuilder;
@@ -42,7 +43,9 @@ public class CategoryService : ICategoryService {
         string status;
 
         try {
-            //TODO:Do validations
+            //validate details
+            var validator = new CategoryAddValidator();
+            await validator.ValidateAndThrowAsync(categoryDetails);
 
             var category = _mapper.Map<Category>(categoryDetails);
 
@@ -62,6 +65,11 @@ public class CategoryService : ICategoryService {
     }
 
     public async Task<CategoryDto> GetByIdAsync(long id) {
+
+        //validate details
+        var validator = new IdValidator();
+        await validator.ValidateAndThrowAsync(id);
+
         var category = await _unitOfWork.CategoryRepo.GetByIdAsync(id);
 
         if (category is null) {
@@ -114,6 +122,10 @@ public class CategoryService : ICategoryService {
     public async Task<string> DeleteCategoryAsync(long id) {
         string status;
         try {
+            //validate details
+            var validator = new IdValidator();
+            await validator.ValidateAndThrowAsync(id);
+
             //check availability
             if (!await _unitOfWork.CategoryRepo.IsActive(id)) {
                 throw new CustomException {
