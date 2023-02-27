@@ -77,6 +77,7 @@ public class FoodService : IFoodService {
         }
 
         var foodInfo = _mapper.Map<FoodDto>(food);
+
         _logger.LogDebug("Food details retrieved successfully.");
 
         return foodInfo;
@@ -138,7 +139,7 @@ public class FoodService : IFoodService {
         return status;
     }
 
-    public async Task<FoodSearchDto> SearchFoodsAsync(string keyword, int skip = 0, int take = 10, string? orderBy = null, long categoryId = 0) {
+    public async Task<FoodSearchDto> SearchFoodsAsync(string? keyword = null, int skip = 0, int take = 10, string? orderBy = null, long categoryId = 0) {
         var foodPredicate = PredicateBuilder.True<Food>();
 
         //filter by keyword
