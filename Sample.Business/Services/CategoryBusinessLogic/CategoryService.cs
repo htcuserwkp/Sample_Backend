@@ -1,9 +1,11 @@
 ﻿using System.Linq.Expressions;
 using System.Net;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Sample.Business.Dtos;
 using Sample.Business.Dtos.CategoryDtos;
+using Sample.Business.Validators.CategoryValidators;
 using Sample.Common.Helpers.Exceptions;
 using Sample.Common.Helpers.PredicateBuilder;
 using Sample.DataAccess.Entities;
@@ -78,7 +80,9 @@ public class CategoryService : ICategoryService {
     public async Task<string> UpdateCategoryAsync(CategoryDto categoryDetails) {
         string status;
         try {
-            //TODO: validate details
+            //validate details
+            var validator = new CategoryUpdateValidator();
+            await validator.ValidateAndThrowAsync(categoryDetails);
 
             var category = await _unitOfWork.CategoryRepo.GetByIdAsync(categoryDetails.Id);
 
