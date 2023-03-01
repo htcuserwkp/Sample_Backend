@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Sample.Business.Dtos.CategoryDtos;
 
-namespace Sample.Business.Validators.CategoryValidators;
+namespace Sample.Business.Validations.CategoryValidators;
 
 public class CategoryUpdateValidator : AbstractValidator<CategoryDto> {
     public CategoryUpdateValidator() {

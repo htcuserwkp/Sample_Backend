@@ -1,10 +1,13 @@
 ﻿using System.Linq.Expressions;
 using System.Net;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Sample.Business.Dtos;
 using Sample.Business.Dtos.CustomerDtos;
 using Sample.Business.Dtos.OrderDtos;
+using Sample.Business.Validations;
+using Sample.Business.Validations.OrderValidators;
 using Sample.Common.Helpers.Exceptions;
 using Sample.Common.Helpers.PredicateBuilder;
 using Sample.DataAccess.Entities;
@@ -24,6 +27,10 @@ public class OrderService : IOrderService {
     }
 
     public async Task<OrderDto> GetByIdAsync(long id) {
+        //validate id
+        var validator = new IdValidator();
+        await validator.ValidateAndThrowAsync(id);
+
         var order = await _unitOfWork.OrderRepo.GetByIdAsync(id);
         if (order is null)
             throw new CustomException {
@@ -72,6 +79,10 @@ public class OrderService : IOrderService {
     }
 
     public async Task<IEnumerable<OrderDto>> GetByCustomerAsync(long customerId) {
+        //validate customerId
+        var validator = new IdValidator("Customer ID");
+        await validator.ValidateAndThrowAsync(customerId);
+
         var orders = (await _unitOfWork.OrderRepo
             .GetAsync(o => o.CustomerId == customerId)
             .ConfigureAwait(false))
@@ -99,6 +110,10 @@ public class OrderService : IOrderService {
     public async Task<string> PlaceOrderAsync(OrderAddDto orderDetails) {
         string status;
         try {
+            //validate details
+            var validator = new OrderPlaceValidator();
+            await validator.ValidateAndThrowAsync(orderDetails);
+
             //Get order items(foods)
             var foods = (await _unitOfWork.FoodRepo
                 .GetAsync((f => orderDetails.OrderItems.Select(i => i.FoodId).Contains(f.Id)))

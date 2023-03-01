@@ -5,8 +5,8 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Sample.Business.Dtos;
 using Sample.Business.Dtos.CategoryDtos;
-using Sample.Business.Validators;
-using Sample.Business.Validators.CategoryValidators;
+using Sample.Business.Validations;
+using Sample.Business.Validations.CategoryValidators;
 using Sample.Common.Helpers.Exceptions;
 using Sample.Common.Helpers.PredicateBuilder;
 using Sample.DataAccess.Entities;
@@ -66,7 +66,7 @@ public class CategoryService : ICategoryService {
 
     public async Task<CategoryDto> GetByIdAsync(long id) {
 
-        //validate details
+        //validate id
         var validator = new IdValidator();
         await validator.ValidateAndThrowAsync(id);
 
@@ -122,7 +122,7 @@ public class CategoryService : ICategoryService {
     public async Task<string> DeleteCategoryAsync(long id) {
         string status;
         try {
-            //validate details
+            //validate id
             var validator = new IdValidator();
             await validator.ValidateAndThrowAsync(id);
 
