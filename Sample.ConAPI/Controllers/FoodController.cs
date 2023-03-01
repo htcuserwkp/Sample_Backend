@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Sample.Common.Helpers.Response;
-using System.Text.Json;
 using Sample.Business.Dtos.FoodDtos;
 using Sample.Business.Services.FoodBusinessLogic;
+using Sample.Common.Helpers.Serializers;
 
 namespace Sample.API.Controllers;
 
@@ -48,7 +48,7 @@ public class FoodController : BaseApiController {
     // POST: api/Add-Food
     [HttpPost("add")]
     public async Task<IActionResult> SaveFood([FromBody] FoodAddDto foodDetails) {
-        _logger.LogInformation($"Add request received for Food: {JsonSerializer.Serialize(foodDetails)}.");
+        _logger.LogInformation($"Add request received for Food: {CamelCaseJsonSerializer.Serialize(foodDetails)}.");
         var response = new ResponseBody<string>();
 
         var status = await _foodService.AddFoodAsync(foodDetails).ConfigureAwait(false);
@@ -62,7 +62,7 @@ public class FoodController : BaseApiController {
     // PUT: api/Food-Update
     [HttpPut("update")]
     public async Task<IActionResult> UpdateFood([FromBody] FoodDto foodDetails) {
-        _logger.LogInformation($"Update request received for Food: {JsonSerializer.Serialize(foodDetails)}.");
+        _logger.LogInformation($"Update request received for Food: {CamelCaseJsonSerializer.Serialize(foodDetails)}.");
         var response = new ResponseBody<string>();
 
         var status = await _foodService.UpdateFoodAsync(foodDetails).ConfigureAwait(false);

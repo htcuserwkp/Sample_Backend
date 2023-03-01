@@ -1,8 +1,8 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Sample.Business.Dtos.CategoryDtos;
 using Sample.Business.Services.CategoryBusinessLogic;
 using Sample.Common.Helpers.Response;
+using Sample.Common.Helpers.Serializers;
 
 namespace Sample.API.Extensions.Endpoints;
 
@@ -48,7 +48,7 @@ public static class CategoryEndpoints {
 
         group.MapPut("/update", async Task<Results<Ok<ResponseBody<string>>, NotFound, NoContent>> (CategoryDto categoryDetails, ICategoryService categoryService) => {
                 
-            logger.LogInformation($"Update request received for Category: {JsonSerializer.Serialize(categoryDetails)}."); 
+            logger.LogInformation($"Update request received for Category: {CamelCaseJsonSerializer.Serialize(categoryDetails)}."); 
 
             var response = new ResponseBody<string> {
                 Message = await categoryService.UpdateCategoryAsync(categoryDetails).ConfigureAwait(false)
@@ -63,7 +63,7 @@ public static class CategoryEndpoints {
 
         group.MapPost("/add", async Task<Results<Ok<ResponseBody<string>>, NotFound, NoContent>> (CategoryAddDto categoryDetails, ICategoryService categoryService) => {
 
-            logger.LogInformation($"Add request received for Category: {JsonSerializer.Serialize(categoryDetails)}.");
+            logger.LogInformation($"Add request received for Category: {CamelCaseJsonSerializer.Serialize(categoryDetails)}.");
 
             var response = new ResponseBody<string> {
                 Message = await categoryService.AddCategoryAsync(categoryDetails).ConfigureAwait(false)

@@ -2,7 +2,7 @@
 using Sample.Business.Dtos.CustomerDtos;
 using Sample.Business.Services.CustomerBusinessLogic;
 using Sample.Common.Helpers.Response;
-using System.Text.Json;
+using Sample.Common.Helpers.Serializers;
 
 namespace Sample.API.Extensions.Endpoints;
 
@@ -47,7 +47,7 @@ public static class CustomerEndpoints {
 
         group.MapPut("/update", async Task<Results<Ok<ResponseBody<string>>, NotFound, NoContent>> (CustomerDto customerDetails, ICustomerService customerService) => {
 
-            logger.LogInformation($"Update request received for Customer: {JsonSerializer.Serialize(customerDetails)}.");
+            logger.LogInformation($"Update request received for Customer: {CamelCaseJsonSerializer.Serialize(customerDetails)}.");
 
             var response = new ResponseBody<string> {
                 Message = await customerService.UpdateCustomerAsync(customerDetails).ConfigureAwait(false)
@@ -62,7 +62,7 @@ public static class CustomerEndpoints {
 
         group.MapPost("/add", async Task<Results<Ok<ResponseBody<string>>, NotFound, NoContent>> (CustomerAddDto customerDetails, ICustomerService customerService) => {
 
-            logger.LogInformation($"Add request received for Customer: {JsonSerializer.Serialize(customerDetails)}.");
+            logger.LogInformation($"Add request received for Customer: {CamelCaseJsonSerializer.Serialize(customerDetails)}.");
 
             var response = new ResponseBody<string> {
                 Message = await customerService.AddCustomerAsync(customerDetails).ConfigureAwait(false)
