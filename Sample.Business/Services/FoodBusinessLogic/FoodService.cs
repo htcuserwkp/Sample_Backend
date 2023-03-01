@@ -1,9 +1,12 @@
 ﻿using System.Linq.Expressions;
 using System.Net;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Sample.Business.Dtos;
 using Sample.Business.Dtos.FoodDtos;
+using Sample.Business.Validations;
+using Sample.Business.Validations.FoodValidators;
 using Sample.Common.Helpers.Exceptions;
 using Sample.Common.Helpers.PredicateBuilder;
 using Sample.DataAccess.Entities;
@@ -40,7 +43,9 @@ public class FoodService : IFoodService {
         string status;
 
         try {
-            //TODO:Do validations
+            //validate details
+            var validator = new FoodAddValidator();
+            await validator.ValidateAndThrowAsync(foodDetails);
 
             //check category
             if (!await _unitOfWork.CategoryRepo.IsActive(foodDetails.CategoryId)) {
@@ -67,6 +72,10 @@ public class FoodService : IFoodService {
     }
 
     public async Task<FoodDto> GetByIdAsync(long id) {
+        //validate id
+        var validator = new IdValidator();
+        await validator.ValidateAndThrowAsync(id);
+
         var food = await _unitOfWork.FoodRepo.GetByIdAsync(id);
 
         if (food is null) {
@@ -86,7 +95,9 @@ public class FoodService : IFoodService {
     public async Task<string> UpdateFoodAsync(FoodDto foodDetails) {
         string status;
         try {
-            //TODO: validate details
+            //validate details
+            var validator = new FoodUpdateValidator();
+            await validator.ValidateAndThrowAsync(foodDetails);
 
             var food = await _unitOfWork.FoodRepo.GetByIdAsync(foodDetails.Id);
 
@@ -118,6 +129,10 @@ public class FoodService : IFoodService {
     public async Task<string> DeleteFoodAsync(long id) {
         string status;
         try {
+            //validate id
+            var validator = new IdValidator();
+            await validator.ValidateAndThrowAsync(id);
+
             //check availability
             if (!await _unitOfWork.FoodRepo.IsActive(id)) {
                 throw new CustomException {

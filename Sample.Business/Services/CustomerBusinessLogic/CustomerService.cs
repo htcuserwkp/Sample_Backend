@@ -1,9 +1,12 @@
 ﻿using System.Linq.Expressions;
 using System.Net;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Sample.Business.Dtos;
 using Sample.Business.Dtos.CustomerDtos;
+using Sample.Business.Validations;
+using Sample.Business.Validations.CustomerValidators;
 using Sample.Common.Helpers.Exceptions;
 using Sample.Common.Helpers.PredicateBuilder;
 using Sample.DataAccess.Entities;
@@ -40,7 +43,9 @@ public class CustomerService : ICustomerService {
         string status;
 
         try {
-            //TODO:Do validations
+            //validate details
+            var validator = new CustomerAddValidator();
+            await validator.ValidateAndThrowAsync(customerDetails);
 
             var customer = _mapper.Map<Customer>(customerDetails);
 
@@ -60,6 +65,11 @@ public class CustomerService : ICustomerService {
     }
 
     public async Task<CustomerDto> GetByIdAsync(long id) {
+
+        //validate id
+        var validator = new IdValidator();
+        await validator.ValidateAndThrowAsync(id);
+
         var customer = await _unitOfWork.CustomerRepo.GetByIdAsync(id);
 
         if (customer is null) {
@@ -78,7 +88,9 @@ public class CustomerService : ICustomerService {
     public async Task<string> UpdateCustomerAsync(CustomerDto customerDetails) {
         string status;
         try {
-            //TODO: validate details
+            //validate details
+            var validator = new CustomerUpdateValidator();
+            await validator.ValidateAndThrowAsync(customerDetails);
 
             var customer = await _unitOfWork.CustomerRepo.GetByIdAsync(customerDetails.Id);
 
@@ -110,6 +122,10 @@ public class CustomerService : ICustomerService {
     public async Task<string> DeleteCustomerAsync(long id) {
         string status;
         try {
+            //validate id
+            var validator = new IdValidator();
+            await validator.ValidateAndThrowAsync(id);
+
             //check availability
             if (!await _unitOfWork.CustomerRepo.IsActive(id)) {
                 throw new CustomException {

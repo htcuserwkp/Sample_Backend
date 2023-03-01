@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http.Features;
 using System.Net;
 using System.Text.Json;
+using FluentValidation;
 using Sample.Common.Helpers.Exceptions;
 
 namespace Sample.API.Extensions;
@@ -37,6 +38,28 @@ public static class ExceptionMiddlewareExtensions {
                             new ErrorResponse() {
                                 StatusCode = httpContext.Response.StatusCode,
                                 Message = customException.CustomMessage
+                            },
+                            serializerOptionForCamelCase
+                        ));
+                }
+                else if (contextFeature.Error is ValidationException validationException) {
+
+                    logger.LogError($"A validation error occurred: {contextFeature.Error.Message}",
+                        contextRequest.Method, contextRequest.Path);
+
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        
+                        await httpContext.Response.WriteAsync(
+                        JsonSerializer.Serialize(
+                            new {
+                                httpContext.Response.StatusCode,
+                                Message = "Bad Request",
+                                Errors = validationException.Errors
+                                    .Select(e => e.ErrorMessage)
+                                    //.Select(e => $"{e.PropertyName} {((e.ErrorMessage.Contains("' ")) 
+                                    //    ? e.ErrorMessage.Split("' ")[1] 
+                                    //    : e.ErrorMessage)}")
+                                    .ToArray()
                             },
                             serializerOptionForCamelCase
                         ));

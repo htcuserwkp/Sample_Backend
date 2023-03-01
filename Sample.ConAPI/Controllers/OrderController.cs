@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Sample.Common.Helpers.Response;
-using System.Text.Json;
 using Sample.Business.Dtos.OrderDtos;
 using Sample.Business.Services.OrderBusinessLogic;
+using Sample.Common.Helpers.Serializers;
 
 namespace Sample.API.Controllers;
 
@@ -74,7 +74,7 @@ public class OrderController : BaseApiController {
 
     [HttpPost("place-order")]
     public async Task<IActionResult> PlaceOrder([FromBody] OrderAddDto orderDetails) {
-        _logger.LogInformation($"Place order request received for Order: {JsonSerializer.Serialize(orderDetails)}.");
+        _logger.LogInformation($"Place order request received for Order: {CamelCaseJsonSerializer.Serialize(orderDetails)}.");
         var response = new ResponseBody<string>();
 
         var status = await _orderService.PlaceOrderAsync(orderDetails).ConfigureAwait(false);
@@ -87,7 +87,7 @@ public class OrderController : BaseApiController {
 
     [HttpPut("update")]
     public async Task<IActionResult> UpdateOrder([FromBody] OrderDto orderDetails) {
-        _logger.LogInformation($"Update request received for Order: {JsonSerializer.Serialize(orderDetails)}.");
+        _logger.LogInformation($"Update request received for Order: {CamelCaseJsonSerializer.Serialize(orderDetails)}.");
         var response = new ResponseBody<string>();
 
         var status = await _orderService.UpdateOrderAsync(orderDetails).ConfigureAwait(false);
