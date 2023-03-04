@@ -14,7 +14,7 @@ public static class ValidationErrorExtensions {
                     .Select(x => x.ErrorMessage)
                     .ToArray();
 
-                var errorResponse = new ValidationErrors {
+                var errorResponse = new ValidationErrorResponse {
                     Errors = errors
                 };
 

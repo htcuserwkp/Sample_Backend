@@ -22,7 +22,7 @@ public class ErrorResponse
         return JsonSerializer.Serialize(this);
     }
 
-    private static string GetDefaultMessage(int statusCode) => statusCode switch
+    protected static string GetDefaultMessage(int statusCode) => statusCode switch
     {
         400 => "Bad Request",
         401 => "Not Authorized",

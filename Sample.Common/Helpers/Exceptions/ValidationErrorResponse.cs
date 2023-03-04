@@ -2,10 +2,10 @@
 
 namespace Sample.Common.Helpers.Exceptions;
 
-public class ValidationErrors : ErrorResponse {
-    public ValidationErrors() {
+public class ValidationErrorResponse : ErrorResponse {
+    public ValidationErrorResponse() {
         StatusCode = (int)HttpStatusCode.BadRequest;
-        Message = "Bad Request";
+        Message = GetDefaultMessage(StatusCode);
     }
 
     public IEnumerable<string>? Errors { get; set; }

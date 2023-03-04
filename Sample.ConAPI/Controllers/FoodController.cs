@@ -34,7 +34,7 @@ public class FoodController : BaseApiController {
     // GET: api/Food-By-Id/5
     [HttpGet("{id:long}")]
     public async Task<ActionResult<ResponseBody<FoodDto>>> GetFood(long id) {
-        _logger.LogInformation($"Get Food request received for ID: {id}.");
+        _logger.LogInformation("Get Food request received for ID: {Id}", id);
         var response = new ResponseBody<FoodDto>();
 
         var food = await _foodService.GetByIdAsync(id).ConfigureAwait(false);
@@ -48,7 +48,7 @@ public class FoodController : BaseApiController {
     // POST: api/Add-Food
     [HttpPost("add")]
     public async Task<IActionResult> SaveFood([FromBody] FoodAddDto foodDetails) {
-        _logger.LogInformation($"Add request received for Food: {CamelCaseJsonSerializer.Serialize(foodDetails)}.");
+        _logger.LogInformation("Add request received for Food:{FoodDetails}", CamelCaseJsonSerializer.Serialize(foodDetails));
         var response = new ResponseBody<string>();
 
         var status = await _foodService.AddFoodAsync(foodDetails).ConfigureAwait(false);
@@ -62,7 +62,7 @@ public class FoodController : BaseApiController {
     // PUT: api/Food-Update
     [HttpPut("update")]
     public async Task<IActionResult> UpdateFood([FromBody] FoodDto foodDetails) {
-        _logger.LogInformation($"Update request received for Food: {CamelCaseJsonSerializer.Serialize(foodDetails)}.");
+        _logger.LogInformation("Update request received for Food:{FoodDetails}", CamelCaseJsonSerializer.Serialize(foodDetails));
         var response = new ResponseBody<string>();
 
         var status = await _foodService.UpdateFoodAsync(foodDetails).ConfigureAwait(false);
@@ -76,7 +76,7 @@ public class FoodController : BaseApiController {
     // DELETE: api/Food-Delete
     [HttpDelete("{id:long}")]
     public async Task<IActionResult> DeleteFood(long id) {
-        _logger.LogInformation($"Delete request received for Food ID: {id}.");
+        _logger.LogInformation("Delete request received for Food ID: {Id}", id);
         var response = new ResponseBody<string>();
 
         var status = await _foodService.DeleteFoodAsync(id).ConfigureAwait(false);

@@ -21,66 +21,64 @@ public static class ExceptionMiddlewareExtensions {
                 var contextFeature = httpContext.Features.Get<IExceptionHandlerFeature>();
                 var contextRequest = httpContext.Features.Get<IHttpRequestFeature>()!;
 
-                dynamic baseException = ((ExceptionHandlerFeature)contextFeature!).Error;
-
                 var serializerOptionForCamelCase = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-                if (baseException != null && baseException!.ToString().Contains("CustomException")) {
-                    var customException = (CustomException)baseException!;
+                if (contextFeature != null)
+                    switch (contextFeature.Error)
+                    {
+                        case CustomException customException:
+                            logger.LogError($"An exception triggered: {customException.CustomMessage}",
+                                contextRequest.Method,
+                                contextRequest.Path);
 
-                    logger.LogError($"An exception triggered: {customException.CustomMessage}", contextRequest.Method,
-                        contextRequest.Path);
+                            httpContext.Response.StatusCode = (int)customException.HttpStatusCode;
 
-                    httpContext.Response.StatusCode = (int)customException.HttpStatusCode;
+                            await httpContext.Response.WriteAsync(
+                                JsonSerializer.Serialize(
+                                    new ErrorResponse()
+                                    {
+                                        StatusCode = httpContext.Response.StatusCode,
+                                        Message = customException.CustomMessage
+                                    },
+                                    serializerOptionForCamelCase
+                                ));
+                            break;
 
-                    await httpContext.Response.WriteAsync(
-                        JsonSerializer.Serialize(
-                            new ErrorResponse() {
-                                StatusCode = httpContext.Response.StatusCode,
-                                Message = customException.CustomMessage
-                            },
-                            serializerOptionForCamelCase
-                        ));
-                }
-                else if (contextFeature.Error is ValidationException validationException) {
+                        case ValidationException validationException:
+                            logger.LogError($"A validation error occurred: {contextFeature.Error.Message}",
+                                contextRequest.Method, contextRequest.Path);
 
-                    logger.LogError($"A validation error occurred: {contextFeature.Error.Message}",
-                        contextRequest.Method, contextRequest.Path);
+                            await httpContext.Response.WriteAsync(
+                                JsonSerializer.Serialize(
+                                    new ValidationErrorResponse()
+                                    {
+                                        Errors = validationException.Errors
+                                            .Select(e => e.ErrorMessage)
+                                            .ToArray()
+                                    },
+                                    serializerOptionForCamelCase
+                                ));
+                            break;
 
-                    httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        
-                        await httpContext.Response.WriteAsync(
-                        JsonSerializer.Serialize(
-                            new {
-                                httpContext.Response.StatusCode,
-                                Message = "Bad Request",
-                                Errors = validationException.Errors
-                                    .Select(e => e.ErrorMessage)
-                                    //.Select(e => $"{e.PropertyName} {((e.ErrorMessage.Contains("' ")) 
-                                    //    ? e.ErrorMessage.Split("' ")[1] 
-                                    //    : e.ErrorMessage)}")
-                                    .ToArray()
-                            },
-                            serializerOptionForCamelCase
-                        ));
-                }
-                else {
-                    logger.LogError($"An unhandled exception occurred: {contextFeature.Error.Message}",
-                        contextRequest.Method, contextRequest.Path);
+                        default:
+                            logger.LogError($"An unhandled exception occurred: {contextFeature.Error.Message}",
+                                contextRequest.Method, contextRequest.Path);
 
-                    httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                    await httpContext.Response.WriteAsync(
-                        JsonSerializer.Serialize(
-                            new ErrorResponse() {
-                                StatusCode = httpContext.Response.StatusCode,
-                                Message = env.IsDevelopment()
-                                    ? contextFeature.Error.Message
-                                    : "Internal Server Error"
-                            },
-                            serializerOptionForCamelCase
-                        ));
-                }
+                            await httpContext.Response.WriteAsync(
+                                JsonSerializer.Serialize(
+                                    new ErrorResponse()
+                                    {
+                                        StatusCode = httpContext.Response.StatusCode,
+                                        Message = env.IsDevelopment()
+                                            ? contextFeature.Error.Message
+                                            : "Internal Server Error"
+                                    },
+                                    serializerOptionForCamelCase
+                                ));
+                            break;
+                    }
             });
         });
     }
